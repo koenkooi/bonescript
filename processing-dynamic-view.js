@@ -10,8 +10,7 @@ setup = function() {
         var delay = config.dynviewConfig.delay;
         var scale = config.dynviewConfig.scale;
         
-        var fileData =
-            "/var/lib/cloud9/processing-dynamic-view/data";
+        var fileData = config.dynviewConfig.file;
 
         var readData = function(fd) {
             fs.readFile(fileData, function(err, data) {

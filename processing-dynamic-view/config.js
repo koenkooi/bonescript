@@ -1,6 +1,8 @@
 exports.dynviewConfig = {
-    delay: 1000,
-    scale: 1,
-    rangeHigh: 10000,
-    rangeLow: 10,
+    file: "/sys/bus/i2c/drivers/bmp085/3-0077/pressure0_input",
+    unit: "milibar",
+    delay: 2000,
+    scale: 100,
+    rangeHigh: 1100,
+    rangeLow: 900,
 };

@@ -4,59 +4,48 @@
 </head>
 <body>
 <h1>Processing.js + socket.io demo</h1>
-<h2>Command:</h2>
-<p><button onclick="trigger()">Trigger</button>
-<h2>Status:</h2>
-<p><span id="status">Not yet connected</span></p>
-<h2>Output:</h2>
 <canvas id="canvas1"></canvas>
 <pre>
 <span id="output"><!--%OUTPUT%--></span>
 </pre>
 
+<h2>Status:</h2>
+<p><span id="status">Not yet connected</span></p>
+
+
 <script src="/socket.io/socket.io.js"></script>
 <script src="processing.js"></script>
 <script type="text/javascript">
-var graphDataSize = 50;
-var graphData = new Array(graphDataSize);
+var pressure = 1;
+var PI = 3.14;
+var HALF_PI = 1.57;
+var TWO_PI = 6.28;
+var unit = "jiggoWatt";
+
 var sketchProc = function(p) {
- p.size(600, 250);
-
- // variables referenced elsewhere
- window.height = p.height;
-
- // variables that might get updated
- window.rangeLow = 0;
- window.rangeHigh = 1;
- window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
-
- // local variables
- var stepX = p.width / (graphDataSize - 1);
- var centerY = window.height / 2;
+ p.size(400, 400);
 
  p.draw = function() {
-  // erase background
-  p.background(224);
+  p.background(255);
+  p.fill(220);
+  p.noStroke();
+  // Angles for sin() and cos() start at 3 o'clock;
+  // subtract HALF_PI to make them start at the top
+  p.ellipse(200, 200, 320, 320);
 
-  // draw axis
-  p.stroke(25);
-  p.strokeWeight(1);
-  p.line(0, centerY, p.width, centerY);
+   var angle = -HALF_PI + HALF_PI / 3;
+   var inc = TWO_PI / 12;
+   p.stroke(100);
+   p.strokeWeight(4);
+   p.arc(200, 200, 320, 320, -(4/3)*PI, PI/3);
 
-  // draw graph
-  p.stroke(0);
-  p.strokeWeight(3);
-  //p.line(0, centerY+1, p.width, centerY+1);
-  var lastX = 0, nextX = 0, lastY, nextY;
-  for(var point in graphData) {
-   nextY = ((window.rangeHigh - graphData[point]) * scaleY);
-   if(point != 0) {
-    p.line(lastX, lastY, nextX, nextY);
-    lastX += stepX;
+   for ( i = 1; i <= 12; i++, angle += inc ) {
+       if(i!=6) p.line(200 + Math.cos(angle) * 140,200 + Math.sin(angle) * 140,200 + Math.cos(angle) * 160,200 + Math.sin(angle) * 160);
    }
-   nextX += stepX;
-   lastY = nextY;
-  }
+  
+  p.stroke(100);
+  p.strokeWeight(6);
+  p.line(200, 200, Math.cos(pressure) * 140 + 200, Math.sin(pressure) * 140 + 200);
  };
 
  p.noLoop();
@@ -69,40 +58,28 @@ var socket = new io.connect();
 socket.on('connect', function() {
  document.getElementById("status").innerHTML="Connected";
 });
-socket.on('config', function(config) {
- try {
-  window.rangeHigh = parseFloat(config.rangeHigh);
- } catch(ex) {}
- try {
-  window.rangeLow = parseFloat(config.rangeLow);
- } catch(ex) {}
- window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
-});
+
 socket.on('data', function(data) {
- document.getElementById("output").innerHTML=""+data;
+ document.getElementById("output").innerHTML="" + data + " " + unit;
  var myData = parseFloat(data);
- for(var i=0; i<graphDataSize-1; i++) {
-  window.graphData[i] = window.graphData[i+1];
- }
- window.graphData[i] = myData;
- if (myData > rangeHigh) {
-  rangeHigh = myData;
-  window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
- }
- if (myData < rangeLow) {
-     rangeLow = myData;
-     window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
- }
+ // Angles for sin() and cos() start at 3 o'clock;
+ // subtract HALF_PI to make them start at the top
+ pressure = myData * (6.28 / 1000) - 1.57;
+
  processing.redraw();
 });
+
+socket.on('config', function(config) {
+ try {
+  unit= config.unit;
+ } catch(ex) {}
+});
+
 socket.on('disconnect', function() {
  document.getElementById("status").innerHTML="Disconnected";
  p.exit();
 });
 
-trigger = function() {
- socket.emit('trigger');
-};
 </script>
 </body>
 </html>
