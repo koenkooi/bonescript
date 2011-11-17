@@ -2,25 +2,27 @@
 var bb = require('./bonescript');
 var fs = require('fs');
 var io = require('socket.io');
-var config = require('./processing-dynamic-view/config');
+var pconfig = require('./processing-dynamic-view/bmp085-pressure');
+var tconfig = require('./processing-dynamic-view/bmp085-temp');
+
 
 setup = function() {
     var onconnect = function(socket) {
         console.log("New client connected");
-        var delay = config.dynviewConfig.delay;
-        var scale = config.dynviewConfig.scale;
+        var delay = pconfig.dynviewConfig.delay;
+        var pscale = pconfig.dynviewConfig.scale;
         
-        var fileData = config.dynviewConfig.file;
+        var pfileData = pconfig.dynviewConfig.file;
 
         var readData = function(fd) {
-            fs.readFile(fileData, function(err, data) {
+            fs.readFile(pfileData, function(err, data) {
                 if(err) throw("Unable to read data: " + err);
-                socket.emit('data', "" + data / scale);
+                socket.emit('data', "" + data / pscale);
             });
             setTimeout(readData, delay);
         };
 
-        socket.emit('config', config.dynviewConfig);
+        socket.emit('config', pconfig.dynviewConfig);
         setTimeout(readData, delay);
 
         // on message
