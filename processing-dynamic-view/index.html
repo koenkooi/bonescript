@@ -139,7 +139,8 @@ socket.on('pressuredata', function(data) {
  var myData = parseFloat(data);
  // Angles for sin() and cos() start at 3 o'clock;
  // subtract HALF_PI to make them start at the top
- pressure = myData * (TWO_PI / 1000) - HALF_PI;
+ // 30miliBar = HALF_PI
+ pressure = (myData  - 1000) * (TWO_PI / 120) - HALF_PI;
 
  processing.redraw();
 });
