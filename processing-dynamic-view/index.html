@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Processing.js + socket.io demo</title>
+<title>Beaglebone + BMP085 sensorboard Processing.js + socket.io demo</title>
 </head>
 <body>
 <h1>Processing.js + socket.io demo</h1>
@@ -69,9 +69,9 @@ socket.on('data', function(data) {
  processing.redraw();
 });
 
-socket.on('config', function(config) {
+socket.on('pressureconfig', function(config) {
  try {
-  unit= config.unit;
+  unit = config.unit;
  } catch(ex) {}
 });
 
