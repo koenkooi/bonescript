@@ -16,11 +16,14 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="processing.js"></script>
 <script type="text/javascript">
-var pressure = 0;
-var temp = 0;
+// global vars
 var PI = 3.14;
 var HALF_PI = 1.57;
 var TWO_PI = 6.28;
+
+// set defaults
+var pressure = 950;
+var temp = -10;
 var punit = "jiggoWatt";
 var tunit = "jiggoWatt";
 
@@ -39,7 +42,7 @@ var sketchProc = function(p) {
 
    var angle = -HALF_PI + HALF_PI / 3;
    var inc = TWO_PI / 12;
-   p.stroke(100);
+   p.stroke(0);
    p.strokeWeight(6);
    p.arc(200, 200, 320, 320, -(4/3)*PI, PI/3);
 
@@ -62,16 +65,23 @@ var sketchProc = function(p) {
   p.stroke(255);
   p.line(500,350,500,50);
   // mercury bubble
-  p.stroke(255,0,0);
+  if(temp > 0) {
+    p.stroke(255,0,0);
+  } else {
+    p.stroke(0,0,255)
+  }  
   p.ellipse(500, 350, 40, 40);
   // temperature line
-  p.line(500,350,500,350 - 10 * temp);
+  p.strokeCap("butt");
+  p.line(500,350,500,220 - 4 * temp);
   // scale
+  p.strokeCap("round");
   p.stroke(0);
   p.strokeWeight(6);
   var theight = 300;
   var inc = 40;
   for ( i = 1; i <= 7; i++, theight -= inc ) {
+    // longer bar at zero degrees C  
     if(i==3) {
         extra = 10;
     } else {
