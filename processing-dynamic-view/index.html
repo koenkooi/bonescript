@@ -3,10 +3,10 @@
 <title>Beaglebone + BMP085 sensorboard Processing.js + socket.io demo</title>
 </head>
 <body>
-<h1>Processing.js + socket.io demo</h1>
+<h1>Beaglebone + BMP085 sensorboard Processing.js + socket.io demo</h1>
 <canvas id="canvas1"></canvas>
 <pre>
-<span id="output"><!--%OUTPUT%--></span>
+<span id="poutput"><!--%OUTPUT%--></span> <span id="toutput"><!--%OUTPUT%--></span>
 </pre>
 
 <h2>Status:</h2>
@@ -16,11 +16,13 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="processing.js"></script>
 <script type="text/javascript">
-var pressure = 1;
+var pressure = 0;
+var temp = 0;
 var PI = 3.14;
 var HALF_PI = 1.57;
 var TWO_PI = 6.28;
-var unit = "jiggoWatt";
+var punit = "jiggoWatt";
+var tunit = "jiggoWatt";
 
 var sketchProc = function(p) {
  p.size(600, 400);
@@ -38,7 +40,7 @@ var sketchProc = function(p) {
    var angle = -HALF_PI + HALF_PI / 3;
    var inc = TWO_PI / 12;
    p.stroke(100);
-   p.strokeWeight(4);
+   p.strokeWeight(6);
    p.arc(200, 200, 320, 320, -(4/3)*PI, PI/3);
 
    for ( i = 1; i <= 12; i++, angle += inc ) {
@@ -62,6 +64,21 @@ var sketchProc = function(p) {
   // mercury bubble
   p.stroke(255,0,0);
   p.ellipse(500, 350, 40, 40);
+  // temperature line
+  p.line(500,350,500,350 - 10 * temp);
+  // scale
+  p.stroke(0);
+  p.strokeWeight(6);
+  var theight = 300;
+  var inc = 40;
+  for ( i = 1; i <= 7; i++, theight -= inc ) {
+    if(i==3) {
+        extra = 10;
+    } else {
+        extra = 0;
+    }    
+    p.line(475,theight,485 + extra, theight );
+  }
  };
 
  p.noLoop();
@@ -75,8 +92,8 @@ socket.on('connect', function() {
  document.getElementById("status").innerHTML="Connected";
 });
 
-socket.on('data', function(data) {
- document.getElementById("output").innerHTML="" + data + " " + unit;
+socket.on('pressuredata', function(data) {
+ document.getElementById("poutput").innerHTML="" + data + " " + punit;
  var myData = parseFloat(data);
  // Angles for sin() and cos() start at 3 o'clock;
  // subtract HALF_PI to make them start at the top
@@ -85,9 +102,25 @@ socket.on('data', function(data) {
  processing.redraw();
 });
 
+socket.on('tempdata', function(data) {
+ document.getElementById("toutput").innerHTML="" + data + tunit;
+ var myData = parseFloat(data);
+ // Angles for sin() and cos() start at 3 o'clock;
+ // subtract HALF_PI to make them start at the top
+ temp = myData;
+ 
+ processing.redraw();
+});
+
 socket.on('pressureconfig', function(config) {
  try {
-  unit = config.unit;
+  punit = config.unit;
+ } catch(ex) {}
+});
+
+socket.on('tempconfig', function(config) {
+ try {
+  tunit = config.unit;
  } catch(ex) {}
 });
 

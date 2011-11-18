@@ -10,20 +10,32 @@ setup = function() {
         console.log("New client connected");
         var pdelay = pconfig.pressureConfig.delay;
         var pscale = pconfig.pressureConfig.scale;
-        
         var pfileData = pconfig.pressureConfig.file;
 
-        var readData = function(fd) {
+        var preadData = function(fd) {
             fs.readFile(pfileData, function(err, data) {
                 if(err) throw("Unable to read data: " + err);
-                socket.emit('data', "" + data / pscale);
+                socket.emit('pressuredata', "" + data / pscale);
             });
-            setTimeout(readData, pdelay);
+            setTimeout(preadData, pdelay);
+        };
+
+        var tdelay = pconfig.tempConfig.delay;
+        var tscale = pconfig.tempConfig.scale;
+        var tfileData = pconfig.tempConfig.file;
+        
+        var treadData = function(fd) {
+            fs.readFile(tfileData, function(err, data) {
+                if(err) throw("Unable to read data: " + err);
+                socket.emit('tempdata', "" + data / tscale);
+            });
+            setTimeout(treadData, tdelay);
         };
 
         socket.emit('pressureconfig', pconfig.pressureConfig);
         socket.emit('tempconfig', pconfig.tempConfig);
-        setTimeout(readData, pdelay);
+        setTimeout(treadData, tdelay);
+        setTimeout(preadData, pdelay);
 
         // on message
         socket.on('message', function(data) {
