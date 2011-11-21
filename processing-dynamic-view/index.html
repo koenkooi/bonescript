@@ -137,6 +137,7 @@ var processing = new Processing(canvas, sketchProc);
 var socket = new io.connect();
 socket.on('connect', function() {
  document.getElementById("status").innerHTML="Connected";
+ $('#animateTest').removeClass().addClass('fadeIn');
 });
 
 socket.on('pressuredata', function(data) {
@@ -172,6 +173,7 @@ socket.on('tempconfig', function(config) {
 
 socket.on('disconnect', function() {
  document.getElementById("status").innerHTML="Disconnected";
+ $('#animateTest').removeClass().addClass('rollOut');
  p.exit();
 });
 
