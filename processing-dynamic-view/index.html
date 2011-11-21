@@ -9,7 +9,7 @@
 </head>
 <body>
 <h1>Beaglebone + BMP085 sensorboard Processing.js + socket.io demo</h1>
-<div id="animateTest"><canvas id="canvas1"></canvas></div>
+<div id="animateTest"><canvas id="barometerCanvas"></canvas><canvas id="thermometerCanvas"></canvas></div>
 
 <h2>Status:</h2>
 <p><span id="status">Not yet connected</span></p>
@@ -29,10 +29,10 @@ var temp = -10;
 var punit = "jiggoWatt";
 var tunit = "jiggoWatt";
 
-var sketchProc = function(p) {
- p.size(600, 400);
+var barometerSketchProc = function(p) {
+ p.size(400, 400);
  p.draw = function() {
-  p.background(255,0);
+ p.background(0,0);
   
   // barometer
   p.fill(220);
@@ -72,24 +72,32 @@ var sketchProc = function(p) {
   p.stroke(60);
   p.strokeWeight(6);
   p.line(200, 200, Math.cos(pressure) * 140 + 200, Math.sin(pressure) * 140 + 200);
-  
+ };
+ p.noLoop();
+}
+
+var thermometerSketchProc = function(p) {
+ p.size(200, 400);
+ p.draw = function() {
+  p.background(0,0);
+
   // thermometer
   // contour
   p.stroke(0);
   p.strokeWeight(60);
-  p.line(500,350,500,50);
-  p.ellipse(500, 350, 40, 40);
+  p.line(100,350,100,50);
+  p.ellipse(100, 350, 40, 40);
   
   p.strokeWeight(44);
   p.stroke(255);
-  p.line(500,350,500,50);
+  p.line(100,350,100,50);
   // mercury bubble
   if(temp > 0) {
     p.stroke(255,0,0);
   } else {
     p.stroke(0,0,255)
   }  
-  p.ellipse(500, 350, 40, 40);
+  p.ellipse(100, 350, 40, 40);
   // temperature line
   if (temp < 44) {
     p.strokeCap("butt");
@@ -98,7 +106,7 @@ var sketchProc = function(p) {
     temp = 44;  
     p.strokeCap("round");  
   }      
-  p.line(500,350,500,220 - 4 * temp);
+  p.line(100,350,100,220 - 4 * temp);
   // scale
   p.strokeCap("round");
   p.stroke(0);
@@ -115,24 +123,25 @@ var sketchProc = function(p) {
     } else {
         extra = 0;
     }    
-    p.line(475,theight,485 + extra, theight );
+    p.line(75,theight,85 + extra, theight );
     
     myText = -30 + i*10;
     p.fill(0, 0, 0);
-    p.text(myText, 492 + extra, theight + 4);
+    p.text(myText, 92 + extra, theight + 4);
   }
   myText = temp + tunit;
   myWidth = p.textWidth(myText);
   p.fill(0, 0, 0);
   p.textSize(18);
-  p.text(myText, 500 - myWidth/2, 350 + 9);
+  p.text(myText, 100 - myWidth/2, 350 + 9);
  };
-
  p.noLoop();
 }
 
-var canvas = document.getElementById("canvas1");
-var processing = new Processing(canvas, sketchProc);
+var canvas = document.getElementById("barometerCanvas");
+var thermometerCanvas = document.getElementById("thermometerCanvas");
+var barometer = new Processing(canvas, barometerSketchProc);
+var thermometer = new Processing(thermometerCanvas, thermometerSketchProc);
 
 var socket = new io.connect();
 socket.on('connect', function() {
@@ -147,7 +156,7 @@ socket.on('pressuredata', function(data) {
  // 30miliBar = HALF_PI
  pressure = (myData  - 1000) * (TWO_PI / 120) - HALF_PI;
 
- processing.redraw();
+ barometer.redraw();
 });
 
 socket.on('tempdata', function(data) {
@@ -156,7 +165,7 @@ socket.on('tempdata', function(data) {
  // subtract HALF_PI to make them start at the top
  temp = myData;
  
- processing.redraw();
+ thermometer.redraw();
 });
 
 socket.on('pressureconfig', function(config) {
