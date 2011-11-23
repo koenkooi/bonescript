@@ -29,10 +29,12 @@ var temp = -10;
 var punit = "jiggoWatt";
 var tunit = "jiggoWatt";
 
+width = window.innerWidth/2;
+
 var barometerSketchProc = function(p) {
- p.size(400, 400);
+ p.size(width, width);
  p.draw = function() {
- p.background(0,0);
+ p.background(0,20);
   
   // barometer
   p.fill(220);
@@ -77,27 +79,28 @@ var barometerSketchProc = function(p) {
 }
 
 var thermometerSketchProc = function(p) {
- p.size(200, 400);
+ p.size(width/2, width);
  p.draw = function() {
-  p.background(0,0);
+  thermometerWidth=width/2;
+  p.background(0,10);
 
   // thermometer
   // contour
   p.stroke(0);
-  p.strokeWeight(60);
-  p.line(100,350,100,50);
-  p.ellipse(100, 350, 40, 40);
+  p.strokeWeight(thermometerWidth*0.3);
+  p.line(thermometerWidth/2,thermometerWidth*1.75,thermometerWidth/2,thermometerWidth/4);
+  p.ellipse(thermometerWidth/2, thermometerWidth*1.75, thermometerWidth/5, thermometerWidth/5);
   
-  p.strokeWeight(44);
+  p.strokeWeight(thermometerWidth*0.22);
   p.stroke(255);
-  p.line(100,350,100,50);
+  p.line(thermometerWidth/2,thermometerWidth*1.75,thermometerWidth/2,thermometerWidth/4);
   // mercury bubble
   if(temp > 0) {
     p.stroke(255,0,0);
   } else {
     p.stroke(0,0,255)
   }  
-  p.ellipse(100, 350, 40, 40);
+  p.ellipse(thermometerWidth/2, thermometerWidth*1.75, thermometerWidth/5, thermometerWidth/5);
   // temperature line
   if (temp < 44) {
     p.strokeCap("butt");
@@ -106,34 +109,34 @@ var thermometerSketchProc = function(p) {
     temp = 44;  
     p.strokeCap("round");  
   }      
-  p.line(100,350,100,220 - 4 * temp);
+  p.line(thermometerWidth/2,thermometerWidth*1.75,thermometerWidth/2,thermometerWidth*1.1 - (thermometerWidth/50) * temp);
   // scale
   p.strokeCap("round");
   p.stroke(0);
-  p.strokeWeight(6);
-  var theight = 300;
-  var inc = 40;
+  p.strokeWeight(thermometerWidth*0.03);
+  var theight = thermometerWidth*1.5;
+  var inc = thermometerWidth/5;
   
   p.textSize(12);
   
   for ( i = 1; i <= 7; i++, theight -= inc ) {
     // longer bar at zero degrees C  
     if(i==3) {
-        extra = 10;
+        extra = thermometerWidth/10;
     } else {
-        extra = 0;
+        extra = thermometerWidth/20;
     }    
-    p.line(75,theight,85 + extra, theight );
+    p.line((thermometerWidth/2) - thermometerWidth/8,theight,(thermometerWidth/2) - thermometerWidth/8 + extra, theight );
     
     myText = -30 + i*10;
     p.fill(0, 0, 0);
-    p.text(myText, 92 + extra, theight + 4);
+    p.text(myText, (thermometerWidth/2) - thermometerWidth*0.09 + extra, theight + 4);
   }
   myText = temp + tunit;
   myWidth = p.textWidth(myText);
   p.fill(0, 0, 0);
-  p.textSize(18);
-  p.text(myText, 100 - myWidth/2, 350 + 9);
+  p.textSize(thermometerWidth*0.09);
+  p.text(myText, thermometerWidth/2 - myWidth/2, thermometerWidth*1.75 + thermometerWidth*0.045);
  };
  p.noLoop();
 }
@@ -185,6 +188,17 @@ socket.on('disconnect', function() {
  $('#animateTest').removeClass().addClass('rollOut');
  p.exit();
 });
+
+window.onresize=resizeHandler;
+function resizeHandler(){
+ width = window.innerWidth/2;
+ 
+ canvas.width = width;
+ canvas.height = width;
+ 
+ thermometerCanvas.width = width/2;
+ thermometerCanvas.height = width;
+}
 
 </script>
 
