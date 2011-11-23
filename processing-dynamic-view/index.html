@@ -29,32 +29,33 @@ var temp = -10;
 var punit = "jiggoWatt";
 var tunit = "jiggoWatt";
 
-width = window.innerWidth/2;
+canvasWidth = window.innerWidth/2;
 
 var barometerSketchProc = function(p) {
- p.size(width, width);
+ p.size(canvasWidth, canvasWidth);
  p.draw = function() {
- p.background(0,20);
+ barometerWidth=canvasWidth;
+ p.background(0,0);
   
   // barometer
   p.fill(220);
   p.noStroke();
   // Angles for sin() and cos() start at 3 o'clock;
   // subtract HALF_PI to make them start at the top
-  p.ellipse(200, 200, 320, 320);
+  p.ellipse(barometerWidth/2, barometerWidth/2, barometerWidth*0.8, barometerWidth*0.8);
   
    var angle = -HALF_PI + HALF_PI / 3;
    var inc = TWO_PI / 12;
    p.stroke(0);
-   p.strokeWeight(6);
-   p.arc(200, 200, 320, 320, -(4/3)*PI, PI/3);
+   p.strokeWeight(barometerWidth*0.015);
+   p.arc(barometerWidth/2, barometerWidth/2, barometerWidth*0.8, barometerWidth*0.8, -(4/3)*PI, PI/3);
 
    // we want a range from ±950 - ±1050 milibar
    // 1-5=1010-1050, 7-12=950-1000
-   p.textSize(15);
+   p.textSize(barometerWidth*0.04);
    for ( i = 1; i <= 12; i++, angle += inc ) {
        if(i!=6) {
-         p.line(200 + Math.cos(angle) * 140,200 + Math.sin(angle) * 140,200 + Math.cos(angle) * 160,200 + Math.sin(angle) * 160);
+         p.line(barometerWidth/2 + Math.cos(angle) * barometerWidth*0.35,barometerWidth/2 + Math.sin(angle) * barometerWidth*.35,barometerWidth/2 + Math.cos(angle) * barometerWidth*0.4,barometerWidth/2 + Math.sin(angle) * barometerWidth*.4);
          if (i < 6) {
            myText = 1000 + 10*i;
          } else {
@@ -62,27 +63,27 @@ var barometerSketchProc = function(p) {
          }     
          myWidth = p.textWidth(myText);
          p.fill(0, 102, 153);
-         p.text(myText, 200 + Math.cos(angle) * 120 - myWidth/2,200 + Math.sin(angle) * 120);
+         p.text(myText, barometerWidth/2 + Math.cos(angle) * barometerWidth*0.3 - myWidth/2,barometerWidth/2 + Math.sin(angle) * barometerWidth*0.3);
        } else {
          myText = punit;  
          myWidth = p.textWidth(myText);
          p.fill(0, 102, 153);
-         p.text(myText, 200 + Math.cos(angle) * 120 - myWidth/2,200 + Math.sin(angle) * 120);
+         p.text(myText, barometerWidth/2 + Math.cos(angle) * barometerWidth*0.3 - myWidth/2,barometerWidth/2 + Math.sin(angle) * barometerWidth*0.3);
        }
    }
   
   p.stroke(60);
-  p.strokeWeight(6);
-  p.line(200, 200, Math.cos(pressure) * 140 + 200, Math.sin(pressure) * 140 + 200);
+  p.strokeWeight(barometerWidth*0.015);
+  p.line(barometerWidth/2, barometerWidth/2, Math.cos(pressure) * barometerWidth*0.35 + barometerWidth/2, Math.sin(pressure) * barometerWidth*0.35 + barometerWidth/2);
  };
  p.noLoop();
 }
 
 var thermometerSketchProc = function(p) {
- p.size(width/2, width);
+ p.size(canvasWidth/2, canvasWidth);
  p.draw = function() {
-  thermometerWidth=width/2;
-  p.background(0,10);
+  thermometerWidth=canvasWidth/2;
+  p.background(0,0);
 
   // thermometer
   // contour
@@ -117,7 +118,7 @@ var thermometerSketchProc = function(p) {
   var theight = thermometerWidth*1.5;
   var inc = thermometerWidth/5;
   
-  p.textSize(12);
+  p.textSize(thermometerWidth*0.06);
   
   for ( i = 1; i <= 7; i++, theight -= inc ) {
     // longer bar at zero degrees C  
@@ -191,13 +192,15 @@ socket.on('disconnect', function() {
 
 window.onresize=resizeHandler;
 function resizeHandler(){
- width = window.innerWidth/2;
+ canvasWidth = window.innerWidth/2;
  
- canvas.width = width;
- canvas.height = width;
+ canvas.width = canvasWidth;
+ canvas.height = canvasWidth;
+ barometer.redraw();
  
- thermometerCanvas.width = width/2;
- thermometerCanvas.height = width;
+ thermometerCanvas.width = canvasWidth/2;
+ thermometerCanvas.height = canvasWidth;
+ thermometer.redraw();
 }
 
 </script>
