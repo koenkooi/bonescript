@@ -29,12 +29,13 @@ var temp = -10;
 var punit = "jiggoWatt";
 var tunit = "jiggoWatt";
 
-canvasWidth = window.innerWidth/2;
+canvasWidth = window.innerWidth;
 
 var barometerSketchProc = function(p) {
- p.size(canvasWidth, canvasWidth);
+ p.size(canvasWidth*(2/3), canvasWidth*(2/3));
  p.draw = function() {
- barometerWidth=canvasWidth;
+ p.size(canvasWidth*(2/3), canvasWidth*(2/3));
+ barometerWidth=p.width;
  p.background(0,0);
   
   // barometer
@@ -80,9 +81,10 @@ var barometerSketchProc = function(p) {
 }
 
 var thermometerSketchProc = function(p) {
- p.size(canvasWidth/2, canvasWidth);
+ p.size(canvasWidth*(1/3), canvasWidth*(2/3));
  p.draw = function() {
-  thermometerWidth=canvasWidth/2;
+  p.size(canvasWidth*(1/3), canvasWidth*(2/3));
+  thermometerWidth=p.width;
   p.background(0,0);
 
   // thermometer
@@ -192,14 +194,14 @@ socket.on('disconnect', function() {
 
 window.onresize=resizeHandler;
 function resizeHandler(){
- canvasWidth = window.innerWidth/2;
+ canvasWidth = window.innerWidth;
  
- canvas.width = canvasWidth;
- canvas.height = canvasWidth;
+ canvas.width = canvasWidth*(2/3);
+ canvas.height = canvasWidth*(2/3);
  barometer.redraw();
  
- thermometerCanvas.width = canvasWidth/2;
- thermometerCanvas.height = canvasWidth;
+ thermometerCanvas.width = canvasWidth*(1/3);
+ thermometerCanvas.height = canvasWidth*(2/3);
  thermometer.redraw();
 }
 
