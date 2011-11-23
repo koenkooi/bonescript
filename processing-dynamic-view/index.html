@@ -136,9 +136,9 @@ var thermometerSketchProc = function(p) {
     p.text(myText, (thermometerWidth/2) - thermometerWidth*0.09 + extra, theight + 4);
   }
   myText = temp + tunit;
-  myWidth = p.textWidth(myText);
   p.fill(0, 0, 0);
   p.textSize(thermometerWidth*0.09);
+  myWidth = p.textWidth(myText);
   p.text(myText, thermometerWidth/2 - myWidth/2, thermometerWidth*1.75 + thermometerWidth*0.045);
  };
  p.noLoop();
