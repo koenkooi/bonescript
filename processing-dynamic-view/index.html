@@ -30,6 +30,8 @@ var punit = "jiggoWatt";
 var tunit = "jiggoWatt";
 
 canvasWidth = window.innerWidth;
+if ( canvasWidth > window.innerHeight) 
+ canvasWidth = 1.4 * window.innerHeight;
 
 var barometerSketchProc = function(p) {
  p.size(canvasWidth*(2/3), canvasWidth*(2/3));
@@ -53,7 +55,7 @@ var barometerSketchProc = function(p) {
 
    // we want a range from ±950 - ±1050 milibar
    // 1-5=1010-1050, 7-12=950-1000
-   p.textSize(barometerWidth*0.04);
+   p.textSize(Math.round(barometerWidth*0.04));
    for ( i = 1; i <= 12; i++, angle += inc ) {
        if(i!=6) {
          p.line(barometerWidth/2 + Math.cos(angle) * barometerWidth*0.35,barometerWidth/2 + Math.sin(angle) * barometerWidth*.35,barometerWidth/2 + Math.cos(angle) * barometerWidth*0.4,barometerWidth/2 + Math.sin(angle) * barometerWidth*.4);
@@ -120,7 +122,7 @@ var thermometerSketchProc = function(p) {
   var theight = thermometerWidth*1.5;
   var inc = thermometerWidth/5;
   
-  p.textSize(thermometerWidth*0.06);
+  p.textSize(Math.round(thermometerWidth*0.06));
   
   for ( i = 1; i <= 7; i++, theight -= inc ) {
     // longer bar at zero degrees C  
@@ -137,7 +139,7 @@ var thermometerSketchProc = function(p) {
   }
   myText = temp + tunit;
   p.fill(0, 0, 0);
-  p.textSize(thermometerWidth*0.09);
+  p.textSize(Math.round(thermometerWidth*0.09));
   myWidth = p.textWidth(myText);
   p.text(myText, thermometerWidth/2 - myWidth/2, thermometerWidth*1.75 + thermometerWidth*0.045);
  };
@@ -195,6 +197,8 @@ socket.on('disconnect', function() {
 window.onresize=resizeHandler;
 function resizeHandler(){
  canvasWidth = window.innerWidth;
+ if ( canvasWidth > window.innerHeight) 
+  canvasWidth = 1.4 * window.innerHeight;
  
  canvas.width = canvasWidth*(2/3);
  canvas.height = canvasWidth*(2/3);
@@ -223,42 +227,6 @@ function resizeHandler(){
 			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('flipOutX');">flipOutX</a>
 			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('flipInY');">flipInY</a>
 			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('flipOutY');">flipOutY</a>
-			
-			<h3>Fading entrances</h3>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('fadeIn');">fadeIn</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('fadeInUp');">fadeInUp</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('fadeInDown');">fadeInDown</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('fadeInLeft');">fadeInLeft</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('fadeInRight');">fadeInRight</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('fadeInUpBig');">fadeInUpBig</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('fadeInDownBig');">fadeInDownBig</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('fadeInLeftBig');">fadeInLeftBig</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('fadeInRightBig');">fadeInRightBig</a>
-			
-			<h3>Fading exits</h3>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('fadeOut');">fadeOut</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('fadeOutUp');">fadeOutUp</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('fadeOutDown');">fadeOutDown</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('fadeOutLeft');">fadeOutLeft</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('fadeOutRight');">fadeOutRight</a>			
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('fadeOutUpBig');">fadeOutUpBig</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('fadeOutDownBig');">fadeOutDownBig</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('fadeOutLeftBig');">fadeOutLeftBig</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('fadeOutRightBig');">fadeOutRightBig</a>
-			
-			<h3>Bouncing entrances</h3>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('bounceIn');">bounceIn</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('bounceInDown');">bounceInDown</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('bounceInUp');">bounceInUp</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('bounceInLeft');">bounceInLeft</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('bounceInRight');">bounceInRight</a>
-			
-			<h3>Bouncing exits</h3>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('bounceOut');">bounceOut</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('bounceOutDown');">bounceOutDown</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('bounceOutUp');">bounceOutUp</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('bounceOutLeft');">bounceOutLeft</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('bounceOutRight');">bounceOutRight</a>
 			
 			<h3>Rotating entrances</h3>
 			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateIn');">rotateIn</a>
