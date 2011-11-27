@@ -8,13 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 </head>
 <body>
-<h1>Beaglebone + BMP085 sensorboard Processing.js + socket.io demo</h1>
 <div id="animateTest"><canvas id="barometerCanvas"></canvas><canvas id="thermometerCanvas"></canvas></div>
-
-<h2>Status:</h2>
-<p><span id="status">Not yet connected</span></p>
-
-
 <script src="/socket.io/socket.io.js"></script>
 <script src="processing.js"></script>
 <script type="text/javascript">
@@ -151,7 +145,6 @@ var thermometer = new Processing(thermometerCanvas, thermometerSketchProc);
 
 var socket = new io.connect();
 socket.on('connect', function() {
- document.getElementById("status").innerHTML="Connected";
  $('#animateTest').removeClass().addClass('fadeIn');
 });
 
@@ -187,50 +180,10 @@ socket.on('tempconfig', function(config) {
 });
 
 socket.on('disconnect', function() {
- document.getElementById("status").innerHTML="Disconnected";
  $('#animateTest').removeClass().addClass('rollOut');
  p.exit();
 });
 
 </script>
-
-    		<hr>
-			<h3>Attention seekers</h3>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('flash');">flash</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('bounce');">bounce</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('shake');">shake</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('tada');">tada</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('swing');">swing</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('wobble');">wobble</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('pulse');">pulse</a>
-			
-			<h3>Flippers (currently Webkit &amp; IE10 only)</h3>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('flip');">flip</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('flipInX');">flipInX</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('flipOutX');">flipOutX</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('flipInY');">flipInY</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('flipOutY');">flipOutY</a>
-			
-			<h3>Rotating entrances</h3>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateIn');">rotateIn</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateInDownLeft');">rotateInDownLeft</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateInDownRight');">rotateInDownRight</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateInUpLeft');">rotateInUpLeft</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateInUpRight');">rotateInUpRight</a>
-			
-			<h3>Rotating exits</h3>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateOut');">rotateOut</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateOutDownLeft');">rotateOutDownLeft</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateOutDownRight');">rotateOutDownRight</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateOutUpLeft');">rotateOutUpLeft</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateOutUpRight');">rotateOutUpRight</a>
-			
-			<h3>Specials</h3>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('hinge');">hinge</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rollIn');">rollIn</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rollOut');">rollOut</a>
-			
-			<hr>
-
 </body>
 </html>
