@@ -74,10 +74,12 @@ var barometerSketchProc = function(p) {
          p.text(myText, barometerWidth/2 + Math.cos(angle) * barometerWidth*0.3 - myWidth/2,barometerWidth/2 + Math.sin(angle) * barometerWidth*0.3);
        }
    }
-  
+
+  //needle
   p.stroke(60);
   p.strokeWeight(barometerWidth*0.015);
-  p.line(barometerWidth/2, barometerWidth/2, Math.cos(pressure) * barometerWidth*0.35 + barometerWidth/2, Math.sin(pressure) * barometerWidth*0.35 + barometerWidth/2);
+  p.line(-Math.cos(pressure) * barometerWidth*0.05  + barometerWidth/2, -Math.sin(pressure) * barometerWidth*0.05 + barometerWidth/2, Math.cos(pressure) * barometerWidth*0.35 + barometerWidth/2, Math.sin(pressure) * barometerWidth*0.35 + barometerWidth/2);
+  p.ellipse(barometerWidth/2, barometerWidth/2, barometerWidth/20, barometerWidth/20);
  };
  p.noLoop();
 }
