@@ -66,12 +66,12 @@ var barometerSketchProc = function(p) {
          }     
          myWidth = p.textWidth(myText);
          p.fill(0, 102, 153);
-         p.text(myText, barometerWidth/2 + Math.cos(angle) * barometerWidth*0.3 - myWidth/2,barometerWidth/2 + Math.sin(angle) * barometerWidth*0.3);
+         p.text(myText, Math.round(barometerWidth/2 + Math.cos(angle) * barometerWidth*0.3 - myWidth/2),Math.round(barometerWidth/2 + Math.sin(angle) * barometerWidth*0.3));
        } else {
          myText = punit;  
          myWidth = p.textWidth(myText);
          p.fill(0, 102, 153);
-         p.text(myText, barometerWidth/2 + Math.cos(angle) * barometerWidth*0.3 - myWidth/2,barometerWidth/2 + Math.sin(angle) * barometerWidth*0.3);
+         p.text(myText, Math.round(barometerWidth/2 + Math.cos(angle) * barometerWidth*0.3 - myWidth/2),Math.round(barometerWidth/2 + Math.sin(angle) * barometerWidth*0.3));
        }
    }
 
