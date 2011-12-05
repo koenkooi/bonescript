@@ -47,7 +47,13 @@ setup = function() {
             console.log("Client disconnected.");
         });
     };
+    
+    var server6 = new bb.Server6(8000, "processing-dynamic-view", onconnect);
+    server6.name = 'ipv6server'
+    server6.begin();
+    
     var server = new bb.Server(8000, "processing-dynamic-view", onconnect);
+    server.name = 'ipv4server'
     server.begin();
 };
 
