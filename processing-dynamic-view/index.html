@@ -25,8 +25,13 @@ var TWO_PI = 6.28;
 
 // set defaults
 var pressure = 950;
-var temp = -10;
+var pmax;
+var pmin;
 var punit = "jiggoWatt";
+
+var temp = -25;
+var tmax;
+var tmin;
 var tunit = "jiggoWatt";
 
 canvasWidth = window.innerWidth;
@@ -138,7 +143,13 @@ var thermometerSketchProc = function(p) {
     myText = -30 + i*10;
     p.fill(0, 0, 0);
     p.text(myText, (thermometerWidth/2) - thermometerWidth*0.09 + extra, theight + 4);
-  }
+    
+    // min/max marks
+    p.strokeWeight(thermometerWidth*0.01);
+    p.line((thermometerWidth/2) + thermometerWidth/8,thermometerWidth*1.1 - (thermometerWidth/50) * tmin,(thermometerWidth/2) + thermometerWidth/8 - thermometerWidth/20, thermometerWidth*1.1 - (thermometerWidth/50) * tmin );
+    p.line((thermometerWidth/2) + thermometerWidth/8,thermometerWidth*1.1 - (thermometerWidth/50) * tmax,(thermometerWidth/2) + thermometerWidth/8 - thermometerWidth/20, thermometerWidth*1.1 - (thermometerWidth/50) * tmax );
+    p.strokeWeight(thermometerWidth*0.03);
+}
   myText = temp + tunit;
   p.fill(0, 0, 0);
   p.textSize(Math.round(thermometerWidth*0.09));
@@ -166,6 +177,9 @@ socket.on('pressuredata', function(data) {
  // 30miliBar = HALF_PI
  pressure = (myData  - 1000) * (TWO_PI / 120) - HALF_PI;
 
+ if (myData > pmax) pmax = myData;
+ if (myData < pmin) pmin = myData;
+ 
  barometer.redraw();
 });
 
@@ -174,19 +188,24 @@ socket.on('tempdata', function(data) {
  // Angles for sin() and cos() start at 3 o'clock;
  // subtract HALF_PI to make them start at the top
  temp = myData;
- 
+ if (myData > tmax) tmax = myData;
+ if (myData < tmin) tmin = myData;
  thermometer.redraw();
 });
 
 socket.on('pressureconfig', function(config) {
  try {
   punit = config.unit;
+  pmin = config.rangeHigh;
+  pmax = config.rangeLow;
  } catch(ex) {}
 });
 
 socket.on('tempconfig', function(config) {
  try {
   tunit = config.unit;
+  tmin = config.rangeHigh;
+  tmax = config.rangeLow;
  } catch(ex) {}
 });
 
