@@ -209,11 +209,13 @@ socket.on('tempconfig', function(config) {
  } catch(ex) {}
 });
 
+/*
 socket.on('disconnect', function() {
  document.getElementById("status").innerHTML="Disconnected";
  $('#animateTest').removeClass().addClass('rollOut');
  p.exit();
 });
+*/
 
 window.onresize=resizeHandler;
 function resizeHandler(){
