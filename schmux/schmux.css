@@ -2,6 +2,7 @@ td.pin {
 	width: 20px;
 	height: 20px;
 	background-color:#EAF2D3;
+	text-align: center;
 }
 
 td.spacer {

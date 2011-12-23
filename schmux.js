@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 var bb = require('./bonescript');
 var fs = require('fs');
+var path = require('path');
 var io = require('socket.io');
 
 
@@ -18,10 +19,18 @@ setup = function() {
             console.log("Client disconnected.");
         });
         
-        socket.on('listMux', function (muxname, fn) {
-            var state = fs.readFileSync("/sys/kernel/debug/omap_mux/" + muxname, 'utf8');
-            console.log(state);
-            fn(state);
+        socket.on('listMux', function (pinname, fn) {
+            console.log(pinname + ": " + bone[pinname].mux);
+            path.exists("/sys/kernel/debug/omap_mux/" + bone[pinname].mux, function (exists) {
+                if(exists) {
+                    var state = fs.readFileSync("/sys/kernel/debug/omap_mux/" + bone[pinname].mux, 'utf8');
+                    fn(state, pinname);
+                } else {
+                    // default mux
+                    console.log(bone[pinname].mux + ": default mux");
+                    fn("0", pinname);
+                }
+            });
         });
     };
     

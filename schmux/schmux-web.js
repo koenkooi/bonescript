@@ -150,13 +150,32 @@ $("#spi1").hover(
 	});
 
 var socket = new io.connect(); 
-socket.emit("listMux", bone["P9_30"].mux, function(muxReadout) {
-    console.log(muxReadout);
-    });
 
 for(var pinname in bone)
 {
     $("#" + pinname + "_name").html(bone[pinname].name);
+    if(bone[pinname].mux) {
+       socket.emit("listMux", pinname, function(muxReadout, pinname) {
+            // name: mcasp0_axr0.spi1_d1 (0x44e10998/0x998 = 0x0023), b NA, t NA
+            // mode: OMAP_PIN_OUTPUT | OMAP_MUX_MODE3
+            // signals: mcasp0_axr0 | ehrpwm0_tripzone | NA | spi1_d1 | mmc2_sdcd_mux1 | NA | NA | gpio3_16
+            if(muxReadout == "0") {
+                $("#" + pinname).html("0");
+                //console.log(pinname + ": default mux");
+            } else {
+                muxBreakdown = muxReadout.split("\n");
+                pinMode = muxBreakdown[1].split("|")[1].substr(-1);
+                if(pinMode == 0) {
+                    pinFunction = muxBreakdown[2].split("|")[pinMode].substr(8);;
+                } else {
+                    pinFunction = muxBreakdown[2].split("|")[pinMode];
+                }
+                $("#" + pinname).html(pinMode);
+                $("#" + pinname + "_name").html(pinFunction);
+                //console.log(pinname + ": " + pinMode);
+            }
+        });
+    }
 }
 
 })
