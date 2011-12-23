@@ -1,0 +1,13 @@
+td.pin {
+	width: 20px;
+	height: 20px;
+	background-color:#EAF2D3;
+}
+
+td.spacer {
+	width: 100px;
+}
+
+td.pin:hover {
+	background-color:#FF0000;
+}
