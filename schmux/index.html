@@ -2,58 +2,8 @@
 <head>
 <link rel="stylesheet" href="schmux.css" />
 <script type=text/javascript src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-<script type="text/javascript">                                         
-$(document).ready(function() {
+<script type=text/javascript src="schmux.js"></script>
 
-$("#i2c1").hover(
-	function () {
-		$("#P9_17").css("background-color", "#000000");
-		$("#P9_17_name").html("I2C1 SCL");	
-		$("#P9_18").css("background-color", "#000000");
-		$("#P9_18_name").html("I2C1 SDA");
-	},
-	function () {
-		$("#P9_17").css("background-color", "#EAF2D3");
-		$("#P9_17_name").html("");
-		$("#P9_18").css("background-color", "#EAF2D3");
-		$("#P9_18_name").html("");	
-	});	
-
-$("#i2c2").hover(
-    function () {
-		$("#P9_19").css("background-color", "#000000");
-		$("#P9_19_name").html("I2C2 SCL");	
-		$("#P9_20").css("background-color", "#000000");
-		$("#P9_20_name").html("I2C2 SDA");
-	},
-	function () {
-		$("#P9_19").css("background-color", "#EAF2D3");
-		$("#P9_19_name").html("");
-		$("#P9_20").css("background-color", "#EAF2D3");
-		$("#P9_20_name").html("");	
-	});	
-    
-$("#spi1").hover(
-    function () {
-    	$("#P9_28").css("background-color", "#000000");
-		$("#P9_28_name").html("SPI0 CS0");	
-		$("#P9_29").css("background-color", "#000000");
-		$("#P9_29_name").html("SPI0 D0");
-        $("#P9_30").css("background-color", "#000000");
-		$("#P9_30_name").html("SPI0 D1");
-	},
-	function () {
-        $("#P9_28").css("background-color", "#EAF2D3");
-		$("#P9_28_name").html("");	
-		$("#P9_29").css("background-color", "#EAF2D3");
-		$("#P9_29_name").html("");
-        $("#P9_30").css("background-color", "#EAF2D3");
-		$("#P9_30_name").html("");	
-	});
-
-});
-
-</script> 
 </head>
 <body>
 <table>
