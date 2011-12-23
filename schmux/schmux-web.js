@@ -149,6 +149,9 @@ $("#spi1").hover(
         clearPin("P9_30");
 	});
 
+var socket = new io.connect(); 
+socket.send("trigger");
+
 for(var pinname in bone)
 {
     $("#" + pinname + "_name").html(bone[pinname].name);
