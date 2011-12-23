@@ -17,14 +17,20 @@ setup = function() {
         socket.on('disconnect', function() {
             console.log("Client disconnected.");
         });
+        
+        socket.on('listMux', function (muxname, fn) {
+            var state = fs.readFileSync("/sys/kernel/debug/omap_mux/" + muxname, 'utf8');
+            console.log(state);
+            fn(state);
+        });
     };
     
     var server6 = new bb.Server6(8001, "schmux", onconnect);
-    server6.name = 'ipv6server'
+    server6.name = 'ipv6server';
     server6.begin();
     
     var server = new bb.Server(8001, "schmux", onconnect);
-    server.name = 'ipv4server'
+    server.name = 'ipv4server';
     server.begin();
 };
 

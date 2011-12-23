@@ -150,7 +150,9 @@ $("#spi1").hover(
 	});
 
 var socket = new io.connect(); 
-socket.send("trigger");
+socket.emit("listMux", bone["P9_30"].mux, function(muxReadout) {
+    console.log(muxReadout);
+    });
 
 for(var pinname in bone)
 {
