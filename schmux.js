@@ -23,8 +23,9 @@ setup = function() {
             console.log(pinname + ": " + bone[pinname].mux);
             path.exists("/sys/kernel/debug/omap_mux/" + bone[pinname].mux, function (exists) {
                 if(exists) {
-                    var state = fs.readFileSync("/sys/kernel/debug/omap_mux/" + bone[pinname].mux, 'utf8');
-                    fn(state, pinname);
+                    fs.readFile("/sys/kernel/debug/omap_mux/" + bone[pinname].mux, 'utf8', function (err, data) {
+                        fn(data, pinname);
+                    });
                 } else {
                     // default mux
                     console.log(bone[pinname].mux + ": default mux");
