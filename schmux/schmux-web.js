@@ -160,18 +160,22 @@ for(var pinname in bone)
             // mode: OMAP_PIN_OUTPUT | OMAP_MUX_MODE3
             // signals: mcasp0_axr0 | ehrpwm0_tripzone | NA | spi1_d1 | mmc2_sdcd_mux1 | NA | NA | gpio3_16
             if(muxReadout == "0") {
-                $("#" + pinname).html("0");
+                //$("#" + pinname).html("0");
                 //console.log(pinname + ": default mux");
             } else {
                 muxBreakdown = muxReadout.split("\n");
                 pinMode = muxBreakdown[1].split("|")[1].substr(-1);
-                if(pinMode == 0) {
-                    pinFunction = muxBreakdown[2].split("|")[pinMode].substr(8);;
-                } else {
-                    pinFunction = muxBreakdown[2].split("|")[pinMode];
+
+                muxSelect = "<select style='width: 120pt'>\n";
+                for (muxOption in muxBreakdown[2].split("|")) {
+                    pinFunction = muxBreakdown[2].split("|")[muxOption].replace('signals:','');
+                    if (muxOption == pinMode) { muxSelected = "selected=true"; } else { muxSelected = ""; }
+                    muxSelect += "<option " + muxSelected + ">" + muxOption + ": " +  pinFunction + "</option>";
                 }
+                muxSelect += "</select>\n";
+                
                 $("#" + pinname).html(pinMode);
-                $("#" + pinname + "_name").html(pinFunction);
+                $("#" + pinname + "_name").html(muxSelect);
                 //console.log(pinname + ": " + pinMode);
             }
         });
