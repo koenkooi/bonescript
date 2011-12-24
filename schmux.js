@@ -8,6 +8,7 @@ var io = require('socket.io');
 setup = function() {
     var onconnect = function(socket) {
         console.log("New client connected");
+        socket.emit('muxstruct', bone);
 
         // on message
         socket.on('message', function(data) {
