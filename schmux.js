@@ -8,6 +8,8 @@ var io = require('socket.io');
 setup = function() {
     var onconnect = function(socket) {
         console.log("New client connected");
+        
+        // send expansion pin info
         socket.emit('muxstruct', bone);
 
         // on message
@@ -20,6 +22,7 @@ setup = function() {
             console.log("Client disconnected.");
         });
         
+        // listen for requests and reads the debugfs entry async
         socket.on('listMux', function (pinname, fn) {
             console.log(pinname + ": " + bone[pinname].mux);
             path.exists("/sys/kernel/debug/omap_mux/" + bone[pinname].mux, function (exists) {

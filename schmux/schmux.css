@@ -1,12 +1,12 @@
 td.pin {
-	width: 20px;
-	height: 20px;
+	width: 1.5em;
+	height: 1.5em;
 	background-color:#EAF2D3;
 	text-align: center;
 }
 
 td.spacer {
-	width: 100px;
+	width: 8em;
 }
 
 td.pin:hover {
