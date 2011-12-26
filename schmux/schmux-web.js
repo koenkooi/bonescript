@@ -13,12 +13,10 @@ bone =
 
 function printPin(pinname) {
     $("#" + pinname).css("background-color", "#000000");
-    $("#" + pinname + "_name").html(bone[pinname].name);
 }
 
 function clearPin(pinname) {
     $("#" + pinname).css("background-color", "#EAF2D3");
-    $("#" + pinname + "_name").html("");
 }
 
 
