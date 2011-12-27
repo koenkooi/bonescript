@@ -54,7 +54,7 @@ setup = function() {
     
     var server = new bb.Server(8000, "weatherstation", onconnect);
     server.name = 'ipv4server'
-    server.begin();
+//    server.begin();
 };
 
 bb.run();
