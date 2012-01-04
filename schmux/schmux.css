@@ -1,6 +1,17 @@
+td {
+	font-size: 90%;
+	margin: .0em;
+	padding: .0em;
+}
+
+select {
+	margin: .0em;
+	padding: .0em;
+}
+
 td.pin {
-	width: 1.5em;
-	height: 1.5em;
+	width: 1.2em;
+	height: 1.2em;
 	background-color:#EAF2D3;
 	text-align: center;
 }
