@@ -1,5 +1,6 @@
 table {
-	font-size: 0.5em;
+	font-size: 12pt;
+    line-height: 80%;
 }
 td.pin {
 	width: 1.0em;
