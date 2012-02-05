@@ -74,18 +74,23 @@
  <div class="slide"> 
   <h1>Optimizing the boot time</h1>
   <ul>
-    <li>10 seconds or less<li>
-    <li>off the shelf initsystem: systemd<li>
-    <li>no beaglebone specific shortcuts<li>
+    <li>10 seconds or less</li>
+    <li>off the shelf initsystem: systemd</li>
+    <li>no beaglebone specific shortcuts</li>
    </ul>
  </div>
  
  <div class="slide"> 
   <h1>Bonescript</h1> 
+   <ul>
+    <li>Arduino like API</li>
+    <li>Emphasis on async methods</li>
+    <li>exposes GPIO, I2C, PWM, ADC and more</li>
+   </ul> 
  </div>
  
   <div class="slide"> 
-  <h1>Bonescript pinmux demo</h1>
+  <h1>Bonescript demo - Pinmux</h1>
     <center><table>
     <thead>
         <tr><td></td><td colspan="2">P9</td><td></td><td></td><td></td><td colspan="2">P8</td><td></td></tr>
@@ -164,6 +169,32 @@
     <td class='spacer'></td>
     <td id='P8_45_name'></td><td id='P8_45' class='pin'></td><td id='P8_46' class='pin'></td><td id='P8_46_name'></td></tr>
     </table></center>
+</div>
+
+<div class="slide"> 
+  <h1>Bonescript demo - EEPROMs</h1>
+  Every BeagleBone has an EEPROM on the mainboard containing the board revision, serial number, manufacturing date, etc. The goal is that every cape will also have an EEPROM containing:
+  <ul>
+    <li>Name</li>
+    <li>Version</li>
+    <li>Manufacturer</li>
+    <li>Partnumber</li>
+    <li>Number of pins used</li>
+    <li>Serialnumber</li>
+    <li>muxing data for the pins used</li>
+    <li>Current usage on 3.3V rail</li>
+    <li>Current usage on VDD 5V rail</li>
+    <li>Current usage on SYS 5V rail</li>
+    <li>Does it supply DC or not?</li>
+  </ul>  
+</div>
+
+<div class="slide"> 
+  <h1>Bonescript demo - ADCs</h1>
+</div>
+
+<div class="slide"> 
+  <h1>Bonescript demo - screenshot</h1>
 </div>
 
  <div class="slide"> 
