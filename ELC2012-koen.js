@@ -20,6 +20,14 @@ setup = function() {
         // send expansion pin info
         socket.emit('muxstruct', bone);
 
+        // send eeprom info
+        var eeproms = readEeproms(EepromFiles);
+        if(eeproms == {}) {
+            console.warn('No valid EEPROM contents found');
+        } else {
+            eepromsString = JSON.stringify(eeproms, null, 2);
+           socket.emit('eeproms', eepromsString);
+        }
         // on message
         socket.on('message', function(data) {
             console.log("Got message from client:", data);
@@ -46,13 +54,6 @@ setup = function() {
             });
         });
     };
-
-    var eeproms = readEeproms(EepromFiles);
-    if(eeproms == {}) {
-        console.warn('No valid EEPROM contents found');
-    } else {
-        eepromsString = JSON.stringify(eeproms, null, 2);
-    }
 
     var server = new bb.Server(2012, "ELC2012-koen", onconnect);
     server.name = 'schmux';
