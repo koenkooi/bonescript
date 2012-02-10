@@ -3,7 +3,7 @@ var bb = require('./bonescript');
 var fs = require('fs');
 var path = require('path');
 var io = require('socket.io');
-
+var eeprom = require('./bonescript/eeprom');
 
 setup = function() {
     var onconnect = function(socket) {
