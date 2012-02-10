@@ -25,8 +25,7 @@ setup = function() {
         if(eeproms == {}) {
             console.warn('No valid EEPROM contents found');
         } else {
-            eepromsString = JSON.stringify(eeproms, null, 2);
-           socket.emit('eeproms', eepromsString);
+            socket.emit('eeproms', eeproms);
         }
         // on message
         socket.on('message', function(data) {
