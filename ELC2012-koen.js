@@ -5,6 +5,14 @@ var path = require('path');
 var io = require('socket.io');
 var eeprom = require('./bonescript/eeprom');
 
+var EepromFiles = {
+    '/sys/bus/i2c/drivers/at24/1-0050/eeprom': { type: 'bone' },
+    '/sys/bus/i2c/drivers/at24/3-0054/eeprom': { type: 'cape' },
+    '/sys/bus/i2c/drivers/at24/3-0055/eeprom': { type: 'cape' },
+    '/sys/bus/i2c/drivers/at24/3-0056/eeprom': { type: 'cape' },
+    '/sys/bus/i2c/drivers/at24/3-0057/eeprom': { type: 'cape' },
+};
+
 setup = function() {
     var onconnect = function(socket) {
         console.log("New client connected");
@@ -38,7 +46,14 @@ setup = function() {
             });
         });
     };
-    
+
+    var eeproms = readEeproms(EepromFiles);
+    if(eeproms == {}) {
+        console.warn('No valid EEPROM contents found');
+    } else {
+        eepromsString = JSON.stringify(eeproms, null, 2);
+    }
+
     var server = new bb.Server(2012, "ELC2012-koen", onconnect);
     server.name = 'schmux';
     server.begin();
