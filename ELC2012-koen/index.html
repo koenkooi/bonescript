@@ -23,7 +23,8 @@
  </div> 
 
  <div class="slide cover"> 
-  <h1>Producing the Beaglebone and Supporting It - ELC 2012</h1>
+  <h1>Producing the Beaglebone and Supporting It</h1>
+  <h2><font color="black">Embedded Linux Conference 2012 - Redwood City</font></h2>
   <p>Latest slides available at: <a href="http://github.com/koenkooi/bonescript">http://github.com/koenkooi/bonescript</a>
   </p>
   <p>
@@ -35,6 +36,7 @@
     <li>Bonescript</li>
     <li>Factory testing</li>
     <li>Building it all with Angstrom</li>
+    <li>Upstream support</li>
    </ul>
   </p>
  </div>
@@ -207,6 +209,30 @@
   <h1>Building it all with Angstrom</h1> 
  </div>
  
+  <div class="slide"> 
+  <h1>Upstream status</h1>
+  <ul>
+    <li>No support for AM33x SoC in U-boot</li>
+    <li>Rudimentary AM33x support in linux-next</li>
+    <ul>
+      <li>Kernel team not focussed on upstream</li>
+      <li>Support for OMAP derivatives gets rewritten every other kernel release</li>
+      <li>Devicetree bringup bottlenecks everything</li>
+    </ul>
+  </ul>
+ </div>
+ 
+  <div class="slide"> 
+  <h1>Devicetree</h1>
+  <ul>
+    <li>Decouples kernel and "platform"</li>
+    <li>Append a dtb to your *Image or have bootloader manage it</li>
+    <li>Cape detection?</li>
+    <li>Pinmuxing?</li>
+    <li>DT fragments?</li>
+    </ul>
+  </ul>
+ </div>
  
  <div class="slide"> 
   <h1>Thanks!</h1> 
