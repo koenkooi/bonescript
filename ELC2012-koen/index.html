@@ -70,6 +70,7 @@
     <li>all the development tools you need pre-installed</li>
     <li>Easy to find getting started guide</li>
     <li>Plug and play when using only the mini-usb cable</li>
+    <li>Arduino like ease of use</li>
   </ul> 
  </div> 
 
@@ -77,8 +78,15 @@
   <h1>Optimizing the boot time</h1>
   <ul>
     <li>10 seconds or less</li>
+      <ul><li>Cold boot</li></ul>
     <li>off the shelf initsystem: systemd</li>
-    <li>no beaglebone specific shortcuts</li>
+      <ul>
+        <li>Parallel startup</li>
+        <li>Socket activation</li>
+        <li>builtin instrumentation</li>
+      </ul>
+    <li>no beaglebone specific shortcuts allowed!</li>
+      <ul><li>Features implemented as <b>additional</b> systemd units and udev rules</li></ul>
    </ul>
  </div>
  
