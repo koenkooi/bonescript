@@ -45,7 +45,7 @@ var topside = (2.15 * 25.4) * scale - 2 * radius1;
 var largeside = (3.4 * 25.4) * scale - radius1 - radius2;
 
 function drawBone(svg) {
-    var beaglebonesvg = svg.group("beaglebone");
+    var beaglebonesvg = svg.group("beaglebone", {transform: 'translate(1,1)'});
     var path = svg.createPath(); 
 
     svg.path(beaglebonesvg, path.move(radius1,0,false).
@@ -73,7 +73,7 @@ function drawBone(svg) {
 }
 
 function colourPin(svg, pin) {
-	var beaglebonesvg = svg.group("beaglebone");
+	var beaglebonesvg = svg.group("beaglebone", {transform: 'translate(1,1)'});
     var connector = pin.substr(0,2);
 	var pinnumber = pin.substr(3);
 	
