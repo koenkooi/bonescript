@@ -69,6 +69,7 @@ function drawBone(svg) {
     }
     svg.text(110, 30, capebuilder, {'font-family':"Verdana", 'font-size':16, 'text-anchor':"middle"});
     svg.text(110, 50, capename, {'font-family':"Verdana", 'font-size':16, 'text-anchor':"middle"});
+    svg.text(110, 70, "I²C address 0x" + address, {'font-family':"Verdana", 'font-size':16, 'text-anchor':"middle"});
 }
 
 function colourPin(svg, pin) {
