@@ -32,3 +32,9 @@ td.pin:hover {
 .butt:hover {
         color: #fff;
 }
+
+div.capesvg {
+    float: left;
+    width: 220px;
+    height: 350px;
+}

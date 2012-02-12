@@ -11,10 +11,10 @@ $(document).ready(function() {
         var bonestring = "BeagleBone " + boneversion + "<br/>";
         bonestring += "Serial number: " + boneserial + "<br/>";
 
-        bonestring += printPin(eeproms, '/sys/bus/i2c/drivers/at24/3-0054/eeprom');
-        bonestring += printPin(eeproms, '/sys/bus/i2c/drivers/at24/3-0055/eeprom');
-        bonestring += printPin(eeproms, '/sys/bus/i2c/drivers/at24/3-0056/eeprom');
-        bonestring += printPin(eeproms, '/sys/bus/i2c/drivers/at24/3-0057/eeprom');
+        printPin(eeproms, '/sys/bus/i2c/drivers/at24/3-0054/eeprom');
+        printPin(eeproms, '/sys/bus/i2c/drivers/at24/3-0055/eeprom');
+        printPin(eeproms, '/sys/bus/i2c/drivers/at24/3-0056/eeprom');
+        printPin(eeproms, '/sys/bus/i2c/drivers/at24/3-0057/eeprom');
 
             
         $("#eeprom").html(bonestring);
@@ -26,17 +26,15 @@ function printPin(eeproms, eeprom) {
     var pinString = "";
     address = eeprom.split("/")[6].substr(4);
 	if(eeproms[eeprom]) {
-        cape2name = eeproms[eeprom].boardName;
-        pinString += "Cape address 0x" + address + ": " + cape2name + "<br/>";
+        capename = eeproms[eeprom].boardName;
+        capebuilder = eeproms[eeprom].manufacturer;
         $('#cape' + address).svg({onLoad: drawBone});
         for (pin in eeproms[eeprom].mux){
             if(eeproms[eeprom].mux[pin].used == "used") {
-                //pinString += pin + " " + eeproms[eeprom].mux[pin].function + "<br/>";
                 colourPin($('#cape' + address).svg('get'), pin);
             }
         }        
     }
-    return pinString;
 }
 
 var scale = 4;
@@ -69,7 +67,8 @@ function drawBone(svg) {
         svg.rect(beaglebonesvg, scale/3 + bottomside + 2 * radius2 - 5*scale, 18.4 * scale + 2.5 * i * scale, 2 * scale, 2 * scale,{fill: '#cdcdcd'});
         svg.rect(beaglebonesvg, 2.6*scale + bottomside + 2 * radius2 - 5*scale,18.4 * scale + 2.5 * i * scale, 2 * scale, 2 * scale,{fill: '#cdcdcd'});
     }
-    //colourPin(svg, "P9_2");
+    svg.text(110, 30, capebuilder, {'font-family':"Verdana", 'font-size':16, 'text-anchor':"middle"});
+    svg.text(110, 50, capename, {'font-family':"Verdana", 'font-size':16, 'text-anchor':"middle"});
 }
 
 function colourPin(svg, pin) {
