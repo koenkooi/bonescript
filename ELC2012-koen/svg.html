@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<title>beaglebone SVG</title>
+<style type="text/css">
+@import "css/jquery.svg.css";
+</style>
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="js/jquery.svg.js"></script>
+<script type="text/javascript">
+$(function() {
+	$('#svgbasics').svg({onLoad: drawInitial});
+	$('#export').click(function() {
+		var xml = $('#svgbasics').svg('get').toSVG();
+		$('#svgexport').html(xml.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+	});
+});
+
+function drawInitial(svg) {
+    var beaglebonesvg = svg.group("beaglebone");
+    var path = svg.createPath(); 
+    //1mm = 10px
+    var scale = 5;
+    var radius1 = 25.4/4 * scale;
+    var radius2 = 25.4/2 * scale;
+    var bottomside = (2.15 * 25.4) * scale - 2 * radius2;
+    var topside = (2.15 * 25.4) * scale - 2 * radius1;
+    var largeside = (3.4 * 25.4) * scale - radius1 - radius2;
+    svg.path(beaglebonesvg, path.move(radius1,0,false).
+    line(topside, 0,true).arc(radius1, radius1, 90, false, true, radius1, radius1, true).
+    line(0, largeside, true).arc(radius2, radius2, -90, false, true, -radius2, radius2,true).
+    line(-bottomside, 0, true).arc(radius2, radius2, 90, false, true, -radius2, -radius2,true).
+    line(0, -largeside, true).arc(radius1, radius1, 90, false, true, radius1, -radius1, true)
+    .close(),  
+    {fill: '#fafafa', stroke: '#000000', strokeWidth: 1});
+    svg.rect(beaglebonesvg, 0, 18 * scale,5 * scale, 58 * scale, {fill: '#fafafa', stroke: '#000000', strokeWidth: 1}); //P9
+    svg.rect(beaglebonesvg, bottomside + 2 * radius2 - 5*scale, 18 * scale,5 * scale, 58 * scale, {fill: '#fafafa', stroke: '#000000', strokeWidth: 1}); //P8
+    for (i=0;i<=22;i++) {
+        //P9
+        svg.rect(beaglebonesvg, scale/3, 18.5 * scale + 2.5 * i * scale, 2 * scale, 2 * scale,{fill: '#cdcdcd'});
+        svg.rect(beaglebonesvg, 2.6*scale,18.5 * scale + 2.5 * i * scale, 2 * scale, 2 * scale,{fill: '#cdcdcd'});
+    }
+    for (i=0;i<=22;i++) {
+        //P8
+        svg.rect(beaglebonesvg, scale/3 + bottomside + 2 * radius2 - 5*scale, 18.4 * scale + 2.5 * i * scale, 2 * scale, 2 * scale,{fill: '#cdcdcd'});
+        svg.rect(beaglebonesvg, 2.6*scale + bottomside + 2 * radius2 - 5*scale,18.4 * scale + 2.5 * i * scale, 2 * scale, 2 * scale,{fill: '#cdcdcd'});
+    }
+}
+
+</script>
+</head>
+<body>
+<div id="svgbasics"></div>
+<button id="export">Export</button>
+<div id="svgexport"></div>
+</body>
+</html>
+
