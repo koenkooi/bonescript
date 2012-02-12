@@ -21,7 +21,7 @@ setup = function() {
         socket.emit('muxstruct', bone);
 
         // send eeprom info
-        var eeproms = readEeproms(EepromFiles);
+        var eeproms = eeprom.readEeproms(EepromFiles);
         if(eeproms == {}) {
             console.warn('No valid EEPROM contents found');
         } else {
