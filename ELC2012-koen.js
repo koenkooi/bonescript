@@ -27,11 +27,19 @@ setup = function() {
         } else {
             socket.emit('eeproms', eeproms);
         }
-        // on message
-        socket.on('message', function(data) {
-            console.log("Got message from client:", data);
-        });
+        
+        var adcdelay = 1000;
+        var adcscale = 1.8/4096;
+        var adcfile = "/sys/devices/platform/tsc/ain1"
 
+        var adcreadData = function(fd) {
+            fs.readFile(adcfileData, function(err, data) {
+                if(err) throw("Unable to read data: " + err);
+                socket.emit('adcdata', "" + data / adcscale);
+            });
+            setTimeout(adcreadData, adcdelay);
+        };
+        
         // on disconnect
         socket.on('disconnect', function() {
             console.log("Client disconnected.");
