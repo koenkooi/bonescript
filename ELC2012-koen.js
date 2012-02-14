@@ -30,15 +30,17 @@ setup = function() {
         
         var adcdelay = 1000;
         var adcscale = 1.8/4096;
-        var adcfile = "/sys/devices/platform/tsc/ain1"
+        var adcfileData = "/sys/devices/platform/tsc/ain1"
 
         var adcreadData = function(fd) {
             fs.readFile(adcfileData, function(err, data) {
                 if(err) throw("Unable to read data: " + err);
-                socket.emit('adcdata', "" + data / adcscale);
+                socket.emit('adcdata', "" + Math.round(data * adcscale * 1000)/1000);
             });
             setTimeout(adcreadData, adcdelay);
         };
+        
+        setTimeout(adcreadData, adcdelay);
         
         // on disconnect
         socket.on('disconnect', function() {
