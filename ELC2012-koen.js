@@ -30,7 +30,7 @@ setup = function() {
         
         var adcdelay = 1000;
         var adcscale = 1.8/4096;
-        var adcfileData = "/sys/devices/platform/tsc/ain1"
+        var adcfileData = "/sys/devices/platform/tsc/ain7"
 
         var adcreadData = function(fd) {
             fs.readFile(adcfileData, function(err, data) {
