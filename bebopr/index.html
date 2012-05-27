@@ -47,13 +47,33 @@ socket.on('connect', function() {
     document.getElementById("status").innerHTML="Connected";
 });
 
+ain2Temp = 0;
+ain4Temp = 0;
+ain6Temp = 0;
+
 socket.on('ain', function(data) {
-    document.getElementById("ain2temp").innerHTML=data[2] + "&#8451";
-    document.getElementById("ain4temp").innerHTML=data[4] + "&#8451";
-    document.getElementById("ain6temp").innerHTML=data[6] + "&#8451";
+    ain2Temp = data[2];
+    ain4Temp = data[4];
+    ain6Temp = data[6];
+    document.getElementById("ain2temp").innerHTML=ain2Temp + "&#8451";
+    document.getElementById("ain4temp").innerHTML=ain4Temp + "&#8451";
+    document.getElementById("ain6temp").innerHTML=ain6Temp + "&#8451";
+    setTimeout(function() {socket.emit('getTemp', 1);}, 1000);
+});
+
+socket.on('PWM', function(data) {
+    pwm0dutypercent = data[0];
+    pwm1dutypercent = data[1];
+    pwm2dutypercent  = data[2];
+    
+    $('#pwm0Slider').slider( "option", "value", pwm0dutypercent );
+    $('#pwm1Slider').slider( "option", "value", pwm1dutypercent );
+    $('#pwm2Slider').slider( "option", "value", pwm2dutypercent );
+    setTimeout(function() {socket.emit('getPWM', 1);}, 5000);
 });
 
 socket.emit('getTemp', 1);
+socket.emit('getPWM', 1);
 
 $(function() {
     $('#pwm0Slider').slider({ min: 0, max: 100, step: 1, animate: true,

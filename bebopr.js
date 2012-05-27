@@ -86,6 +86,21 @@ var inputPinAIN2 = bone.P9_40;
 var inputPinAIN4 = bone.P9_38;
 var inputPinAIN6 = bone.P9_36;
 
+pwmRead = exports.pwmRead = function(pin, callback) {
+    if(!pin.pwm) {
+        throw(pin.key + ' does not support pwmRead()');
+    }
+    var path = '/sys/class/pwm/' + pin.pwm.path;
+    if(callback) {
+        var readFile = function(err, data) {
+            callback({'freq':data/100});
+        };
+        fs.readFile(path+'/duty_percent', readFile);
+        return(true);
+    }
+    return(fs.readFileSync(path+'/duty_percent')/100);
+};
+
 function fancyAverage(numbers) {
     // Sort the array so we know which elements are the max and min values.
     numbers.sort();
@@ -124,7 +139,7 @@ function readAIN(inputPin, ainIndex) {
         //console.log("Interpolated temperature for AIN" + ainIndex + ": " + ainTemp[ainIndex] + "°C");
         return
     }
-    setTimeout(function() {readAIN(inputPin, ainIndex); }, 100);
+    setTimeout(function() {readAIN(inputPin, ainIndex); }, 10);
 }
 
 
@@ -147,8 +162,7 @@ setup = function() {
                     analogWrite(bone.P9_14, pwmvalue);
                     break;
             }
-
-            console.log("PWM" + pwm + ": " + pwmvalue);
+            //console.log("PWM" + pwm + ": " + pwmvalue);
         });
 
         socket.on('getTemp', function() {
@@ -157,6 +171,13 @@ setup = function() {
             readAIN(inputPinAIN6, 6);
             socket.emit('ain', ainTemp);
         });
+        
+        socket.on('getPWM', function() {
+            pwm2duty = pwmRead(bone.P8_46) * 100;
+            pwm4duty = pwmRead(bone.P8_45) * 100;
+            pwm6duty = pwmRead(bone.P9_14) * 100;
+            socket.emit('PWM', [pwm2duty, pwm4duty, pwm6duty]);
+        });
 
         // on disconnect
         socket.on('disconnect', function() {
@@ -164,16 +185,16 @@ setup = function() {
         });
     };
     
-    var server = new bb.Server(4000, "bebopr", onconnect);
+    var server = new bb.Server(4002, "bebopr", onconnect);
     server.name = 'bebopr';
     server.begin();
 };
 
 loop = function() {
-    readAIN(inputPinAIN2, 2);
-    readAIN(inputPinAIN4, 4);
-    readAIN(inputPinAIN6, 6);
-    delay(5000);
+//    readAIN(inputPinAIN2, 2);
+//    readAIN(inputPinAIN4, 4);
+//    readAIN(inputPinAIN6, 6);
+//    delay(5000);
 }
 
 bb.run();
