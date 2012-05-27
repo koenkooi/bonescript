@@ -109,7 +109,7 @@ function fancyAverage(numbers) {
 
 function readAIN(inputPin, ainIndex) {
 	var temp;
-	var smoothArray = new Array(5);
+	var smoothArray = new Array(4);
 	var prevLUT = 4096;
 	var value;
 
