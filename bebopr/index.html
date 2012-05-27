@@ -48,9 +48,9 @@ socket.on('connect', function() {
 });
 
 socket.on('ain', function(data) {
-    document.getElementById("ain2temp").innerHTML=data["0"];
-    document.getElementById("ain4temp").innerHTML=data[1];
-    document.getElementById("ain6temp").innerHTML=data["2"];
+    document.getElementById("ain2temp").innerHTML=data[2] + "&#8451";
+    document.getElementById("ain4temp").innerHTML=data[4] + "&#8451";
+    document.getElementById("ain6temp").innerHTML=data[6] + "&#8451";
 });
 
 socket.emit('getTemp', 1);
