@@ -72,15 +72,7 @@ var tempLUT =
 }
 tempLUT.sort;
 
-var ainArray = new Array();
-ainArray[2] = new Array();
-ainArray[4] = new Array();
-ainArray[6] = new Array();
-
 ainTemp = new Array();
-
-var m = new Array();
-m[2] = 0; m[4] = 0 ; m[6] = 0;
 
 var inputPinAIN2 = bone.P9_40;
 var inputPinAIN4 = bone.P9_38;
@@ -116,35 +108,34 @@ function fancyAverage(numbers) {
 
 
 function readAIN(inputPin, ainIndex) {
-    var temp;
-    var prevLUT = 4096;
-    var value;
+	var temp;
+	var smoothArray = new Array(5);
+	var prevLUT = 4096;
+	var value;
 
-    n = m[ainIndex];
+	for (i = 0; i < smoothArray.length; i = i + 1) {
+        delay(50);
+		smoothArray[i] = analogRead(inputPin) * 4096;
+	}
+    
+    value = fancyAverage(smoothArray);
+    
+	for (var x in tempLUT) {
+		if (value > prevLUT && value < x) {
+			lutInterval = x - prevLUT;
+			lutValueInterval = tempLUT[x] - tempLUT[prevLUT];
+			//console.log("AIN" + ainIndex + " value " + value + " is in between " + prevLUT + "->" + tempLUT[prevLUT] + "  and " + x + "->" + tempLUT[x]);
+			temp = Math.round((tempLUT[prevLUT] + ((value - prevLUT) / lutInterval) * lutValueInterval) * 10) / 10;
+			// Hack to detect unconnected sensors
+			if (temp < 5) temp = 0;
+            if (temp > 300) temp = 300;
+		}
+		prevLUT = x;
+	}
 
-    ainArray[ainIndex][n] = analogRead(inputPin) * 4096;
-    m[ainIndex]++;
-    // limit to 4 samples
-    if(n>3) {
-        value = fancyAverage(ainArray[ainIndex]);
-        for(var x in tempLUT) {
-            if(value > prevLUT && value < x) {
-                lutInterval = x - prevLUT ;
-                lutValueInterval = tempLUT[x] - tempLUT[prevLUT];
-                //console.log("AIN" + ainIndex + " value " + value + " is in between " + prevLUT + "->" + tempLUT[prevLUT] + "  and " + x + "->" + tempLUT[x]);
-                ainTemp[ainIndex] = Math.round((tempLUT[prevLUT] + ((value - prevLUT)/lutInterval) * lutValueInterval)*10)/10;
-                // Hack to detect unconnected sensors
-                if(ainTemp[ainIndex] < 0)
-                    ainTemp[ainIndex] = 0;
-            }
-        prevLUT = x;    
-        }
-        //console.log("Interpolated temperature for AIN" + ainIndex + ": " + ainTemp[ainIndex] + "°C");
-        return
-    }
-    setTimeout(function() {readAIN(inputPin, ainIndex); }, 10);
+	//console.log("Interpolated temperature for AIN" + ainIndex + ": " + value + "°C");
+	return temp
 }
-
 
 setup = function() {
     var onconnect = function(socket) {
@@ -169,9 +160,9 @@ setup = function() {
         });
 
         socket.on('getTemp', function() {
-            readAIN(inputPinAIN2, 2);
-            readAIN(inputPinAIN4, 4);
-            readAIN(inputPinAIN6, 6);
+            ainTemp[2] = readAIN(inputPinAIN2, 2);
+            ainTemp[4] = readAIN(inputPinAIN4, 4);
+            ainTemp[6] = readAIN(inputPinAIN6, 6);
             socket.emit('ain', ainTemp);
         });
         
