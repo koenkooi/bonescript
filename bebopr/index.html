@@ -81,6 +81,16 @@ var sketchProc = function(p) {
 			p.strokeWeight(1);
 			p.line(0, bottomY, p.width, bottomY);
 
+            p.fill(0);
+            p.stroke(150);
+            for (lineY = 0 ; lineY < window.rangeHigh + 1 ; lineY = lineY + 5) {
+            	for (dashValue = 0; dashValue < p.width ; dashValue = dashValue + 5) {
+    				dashPoint = 1;
+	    			p.line(dashValue * dashPoint, lineY, (dashValue * dashPoint) , lineY);
+		    	}
+            }
+            p.stroke(25);
+
             for (lineY = 0 ; lineY < window.rangeHigh + 1 ; lineY = lineY + 50) {
                 p.text(250 - lineY , 0, lineY - 2);
     			for (dashValue = 0; dashValue < p.width/10 ; dashValue = dashValue + 1) {
