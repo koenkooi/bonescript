@@ -69,21 +69,31 @@ socket.on('PWM', function(data) {
     $('#pwm0Slider').slider( "option", "value", pwm0dutypercent );
     $('#pwm1Slider').slider( "option", "value", pwm1dutypercent );
     $('#pwm2Slider').slider( "option", "value", pwm2dutypercent );
-    setTimeout(function() {socket.emit('getPWM', 1);}, 5000);
+    setTimeout(function() {socket.emit('getPWM', 1);}, 1000);
 });
 
 socket.emit('getTemp', 1);
 socket.emit('getPWM', 1);
 
 $(function() {
+    // only report changes if they weren't done programatically via getPWM
     $('#pwm0Slider').slider({ min: 0, max: 100, step: 1, animate: true,
-        change: function(event, ui) {  socket.emit('pwmdutypercent', [ 0, ui.value ]); }
+        change: function(event, ui) {  
+            if(event.originalEvent!=undefined) 
+                socket.emit('pwmdutypercent', [ 0, ui.value ]); 
+        }
     });
     $('#pwm1Slider').slider({ min: 0, max: 100, step: 1, animate: true,
-        change: function(event, ui) { socket.emit('pwmdutypercent', [ 1, ui.value ]); }
+        change: function(event, ui) {
+            if(event.originalEvent!=undefined) 
+                socket.emit('pwmdutypercent', [ 1, ui.value ]); 
+        }
     });
     $('#pwm2Slider').slider({ min: 0, max: 100, step: 1, animate: true,
-        change: function(event, ui) { socket.emit('pwmdutypercent', [ 2, ui.value ]); }
+        change: function(event, ui) { 
+            if(event.originalEvent!=undefined) 
+                socket.emit('pwmdutypercent', [ 2, ui.value ]); 
+            }
     });
 });
 </script>

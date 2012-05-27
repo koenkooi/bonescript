@@ -162,7 +162,7 @@ setup = function() {
                     analogWrite(bone.P9_14, pwmvalue);
                     break;
             }
-            //console.log("PWM" + pwm + ": " + pwmvalue);
+            console.log("PWM" + pwm + ": " + pwmvalue);
         });
 
         socket.on('getTemp', function() {
