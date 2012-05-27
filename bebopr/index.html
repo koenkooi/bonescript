@@ -100,8 +100,8 @@ var sketchProc = function(p) {
             		nextX += stepX;
             		lastY = nextY;
             	}
-                p.text(graphData[i][point] , p.width - 30, lastY - 2);
-                p.text("AIN" + (i+1)*2 , p.width - 30, 20*(i+1));
+                p.text(Math.round(graphData[i][point]) , p.width - 20, lastY - 2);
+                p.text("AIN" + (i+1)*2 , p.width - 30, 16*(i+1));
             }
 		};
 

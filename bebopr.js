@@ -109,7 +109,7 @@ function fancyAverage(numbers) {
 
 function readAIN(inputPin, ainIndex) {
 	var temp;
-	var smoothArray = new Array(4);
+	var smoothArray = new Array(5);
 	var prevLUT = 4096;
 	var value;
 
@@ -127,7 +127,7 @@ function readAIN(inputPin, ainIndex) {
 			//console.log("AIN" + ainIndex + " value " + value + " is in between " + prevLUT + "->" + tempLUT[prevLUT] + "  and " + x + "->" + tempLUT[x]);
 			temp = Math.round((tempLUT[prevLUT] + ((value - prevLUT) / lutInterval) * lutValueInterval) * 10) / 10;
 			// Hack to detect unconnected sensors
-			if (temp < 5) temp = 0;
+			if (temp < 10) temp = 0;
             if (temp > 300) temp = 300;
 		}
 		prevLUT = x;
