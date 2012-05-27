@@ -20,12 +20,6 @@
 </div><br/><br/>
 
 <canvas id="ain2Canvas">2</canvas>
-
-<div id = "ain2temp">0</div><br/>
-<div id = "ain4temp">0</div><br/>
-<div id = "ain6temp">0</div><br/>
-
-
 <div>
     PWM0 duty cycle %
     <div id="pwm0Slider"></div>
@@ -117,7 +111,7 @@ var sketchProc = function(p) {
             		lastY = nextY;
             	}
                 p.text(Math.round(graphData[i][point]) , p.width - 20, lastY - 2);
-                p.text("AIN" + (i+1)*2 , p.width - 30, 16*(i+1));
+                p.text("AIN" + (i+1)*2 + ": " + Math.round(graphData[i][point]*10)/10, p.width - 60, 16*(i+1));
             }
 		};
 
@@ -141,9 +135,9 @@ socket.on('ain', function(data) {
     if(!data[6])
         data[6] = 0;
 
-    document.getElementById("ain2temp").innerHTML="AIN2: " + data[2] + "&#8451";
-    document.getElementById("ain4temp").innerHTML="AIN4: " + data[4] + "&#8451";
-    document.getElementById("ain6temp").innerHTML="AIN6: " +data[6] + "&#8451";
+    //document.getElementById("ain2temp").innerHTML="AIN2: " + data[2] + "&#8451";
+    //document.getElementById("ain4temp").innerHTML="AIN4: " + data[4] + "&#8451";
+    //document.getElementById("ain6temp").innerHTML="AIN6: " +data[6] + "&#8451";
     
      for (j = 0; j < 3 ; j = j +1) {
          var myData = parseFloat(data[(j+1)*2]);
