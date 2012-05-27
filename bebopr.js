@@ -109,7 +109,7 @@ function fancyAverage(numbers) {
     for(var i=1,sum=0;i<(numbers.length - 1);sum+=numbers[i++]);
 
     // Average and round to 2 decimals
-    fancyAveragenumber = Math.round(100*sum/(numbers.length -2))/100;
+    fancyAveragenumber = Math.round(10*sum/(numbers.length -2))/10;
 
     return fancyAveragenumber;
 }
@@ -133,6 +133,9 @@ function readAIN(inputPin, ainIndex) {
                 lutValueInterval = tempLUT[x] - tempLUT[prevLUT];
                 //console.log("AIN" + ainIndex + " value " + value + " is in between " + prevLUT + "->" + tempLUT[prevLUT] + "  and " + x + "->" + tempLUT[x]);
                 ainTemp[ainIndex] = Math.round((tempLUT[prevLUT] + ((value - prevLUT)/lutInterval) * lutValueInterval)*10)/10;
+                // Hack to detect unconnected sensors
+                if(ainTemp[ainIndex] < 0)
+                    ainTemp[ainIndex] = 0;
             }
         prevLUT = x;    
         }

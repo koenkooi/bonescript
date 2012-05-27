@@ -14,8 +14,6 @@
 <body>
 <h1>Beaglebone + BeBoPr cape</h1>
 <canvas id="ain2Canvas">2</canvas>
-<canvas id="ain4Canvas">4</canvas>
-<canvas id="ain6Canvas">6</canvas>
 
 <div id = "ain2temp">0</div><br/>
 <div id = "ain4temp">0</div><br/>
@@ -47,6 +45,71 @@ socket.on('connect', function() {
     document.getElementById("status").innerHTML="Connected";
 });
 
+var graphDataSize = 300;
+graphData = new Array(3);
+graphData[0] = new Array(graphDataSize);
+graphData[1] = new Array(graphDataSize);
+graphData[2] = new Array(graphDataSize);
+
+var sketchProc = function(p) {
+		p.size(600, 250);
+        
+		// variables referenced elsewhere
+		window.height = p.height;
+
+		// variables that might get updated
+		window.rangeLow = 0;
+		window.rangeHigh = 250;
+		window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
+
+		// local variables
+		var stepX = p.width / (graphDataSize - 1);
+		var bottomY = window.height - 1;
+		p.draw = function() {
+            p.fill(255);
+			// erase background
+			p.background(224);
+
+			// draw axis
+			p.stroke(25);
+			p.strokeWeight(1);
+			p.line(0, bottomY, p.width, bottomY);
+
+            for (lineY = 0 ; lineY < window.rangeHigh + 1 ; lineY = lineY + 50) {
+                p.text(250 - lineY , 0, lineY - 2);
+    			for (dashValue = 0; dashValue < p.width/10 ; dashValue = dashValue + 1) {
+    				dashPoint = 10;
+	    			p.line(dashValue * dashPoint, lineY, (dashValue * dashPoint) + 5, lineY);
+		    	}
+            }
+            
+			// draw graph
+            for (i = 0; i < 3; i = i + 1) {
+            	p.stroke((i%3)*255, (i%2)*255, 255);
+            	p.strokeWeight(1);
+                p.fill((i%3)*255, (i%2)*255, 255, 51);
+            	var lastX = 0,
+            		nextX = 0,
+            		lastY, nextY;
+            	for (var point in graphData[i]) {
+            		nextY = ((window.rangeHigh - graphData[i][point]) * scaleY);
+            		if (point != 0) {
+            			p.line(lastX, lastY, nextX, nextY);
+            			lastX += stepX;
+            		}
+            		nextX += stepX;
+            		lastY = nextY;
+            	}
+                p.text(graphData[i][point] , p.width - 30, lastY - 2);
+            }
+		};
+
+		p.noLoop();
+	}
+
+var ain2canvas = document.getElementById("ain2Canvas");
+var processing = new Processing(ain2canvas, sketchProc);
+
 ain2Temp = 0;
 ain4Temp = 0;
 ain6Temp = 0;
@@ -58,6 +121,16 @@ socket.on('ain', function(data) {
     document.getElementById("ain2temp").innerHTML=ain2Temp + "&#8451";
     document.getElementById("ain4temp").innerHTML=ain4Temp + "&#8451";
     document.getElementById("ain6temp").innerHTML=ain6Temp + "&#8451";
+    
+     for (j = 0; j < 3 ; j = j +1) {
+         var myData = parseFloat(data[(j+1)*2]);
+         for (var i = 0; i < graphDataSize - 1; i++) {
+         	window.graphData[j][i] = window.graphData[j][i + 1];
+         }
+         window.graphData[j][i] = myData;
+     }
+     processing.redraw();
+    
     setTimeout(function() {socket.emit('getTemp', 1);}, 1000);
 });
 
@@ -96,6 +169,7 @@ $(function() {
             }
     });
 });
+
 </script>
 
 </body>
