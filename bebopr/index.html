@@ -13,6 +13,12 @@
 </head>
 <body>
 <h1>Beaglebone + BeBoPr cape</h1>
+
+<div id="radio">
+    <input type="radio" id="ioenabled" name="radio" /><label for="ioenabled">Enabled</label>
+	<input type="radio" id="iodisabled" name="radio" checked="checked" /><label for="iodisabled">Disabled</label>
+</div><br/><br/>
+
 <canvas id="ain2Canvas">2</canvas>
 
 <div id = "ain2temp">0</div><br/>
@@ -152,10 +158,27 @@ socket.on('PWM', function(data) {
     setTimeout(function() {socket.emit('getPWM', 1);}, 1000);
 });
 
+socket.on('ioenableState', function(data) {
+    if(data > 0)
+        //$( "#radio" ).button( "option", "enabled", true ).button("refresh");
+        $('#ioenabled').attr('checked','checked').button("refresh");
+});
+
 socket.emit('getTemp', 1);
 socket.emit('getPWM', 1);
 
 $(function() {
+    $("#radio").buttonset();
+    socket.emit('ioenable', "read");
+    $("#radio :radio").click(function(){
+        //alert($(this).attr("id"));
+        if($(this).attr("id") == "ioenabled")
+            socket.emit('ioenable',"enable");
+        else
+            socket.emit('ioenable',"disable");
+    });          
+
+    
     // only report changes if they weren't done programatically via getPWM
     $('#pwm0Slider').slider({ min: 0, max: 100, step: 1, animate: true,
         change: function(event, ui) {  

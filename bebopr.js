@@ -141,6 +141,32 @@ setup = function() {
     var onconnect = function(socket) {
         console.log("New client connected");
         
+        // IO enable
+        socket.on('ioenable', function(data) {
+            var ionable;
+            // Yes, yes, convert to switch()
+            if(data == "enable") {
+                //# IO_PWR_ON = R9 / GPIO1[6] / gpio38 / gpmc_ad6 -> P8_3
+                //# !IO_PWR_ON = R8 / GPIO1[2] / gpio34 / gpmc_ad2 -> P8_5
+                digitalWrite(bone.P8_3, 1);
+                digitalWrite(bone.P8_5, 0);
+            }
+            if(data == "disable") {
+                //# IO_PWR_ON = R9 / GPIO1[6] / gpio38 / gpmc_ad6 -> P8_3
+                //# !IO_PWR_ON = R8 / GPIO1[2] / gpio34 / gpmc_ad2 -> P8_5
+                digitalWrite(bone.P8_3, 0);
+                digitalWrite(bone.P8_5, 1);
+            }
+            
+            if(digitalRead(bone.P8_3) == 1 && digitalRead(bone.P8_5) == 0)
+                    ioenable = 1;
+            else
+                    ioenable = 0;
+            
+            console.log("IO enable: " + ioenable);
+            socket.emit('ioenableState', ioenable);
+        });    
+        
         // PWM changes
         socket.on('pwmdutypercent', function(data) {
             pwm = data[0];
