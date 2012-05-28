@@ -230,10 +230,6 @@ setup = function() {
 };
 
 loop = function() {
-//    readAIN(inputPinAIN2, 2);
-//    readAIN(inputPinAIN4, 4);
-//    readAIN(inputPinAIN6, 6);
-//    delay(5000);
 }
 
 bb.run();

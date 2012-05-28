@@ -217,7 +217,7 @@ $(function() {
     $('#pwm0Slider').slider({ min: 0, max: 100, step: 1, animate: true,
         change: function(event, ui) {  
             if(event.originalEvent!=undefined) 
-                socket.emit('pwmdutypercent', [ 0, ui.value ]); 
+                socket.emit('pwmdutypercent', [ 0, ui.value ]);
         }
     });
     $('#pwm1Slider').slider({ min: 0, max: 100, step: 1, animate: true,
@@ -229,7 +229,7 @@ $(function() {
     $('#pwm2Slider').slider({ min: 0, max: 100, step: 1, animate: true,
         change: function(event, ui) { 
             if(event.originalEvent!=undefined) 
-                socket.emit('pwmdutypercent', [ 2, ui.value ]); 
+                socket.emit('pwmdutypercent', [ 2, ui.value ]);
             }
     });
 });
