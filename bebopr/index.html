@@ -181,13 +181,21 @@ socket.emit('getPWM', 1);
 $(function() {
     $("#radio").buttonset();
     socket.emit('ioenable', "read");
-    $("#radio :radio").click(function(){
-        //alert($(this).attr("id"));
-        if($(this).attr("id") == "ioenabled")
-            socket.emit('ioenable',"enable");
-        else
-            socket.emit('ioenable',"disable");
-    });          
+    $("#radio :radio").click(function() {
+    	//alert($(this).attr("id"));
+    	if ($(this).attr("id") == "ioenabled") {
+    		socket.emit('ioenable', "enable");
+    		$('#pwm0Slider').slider("enable");
+    		$('#pwm1Slider').slider("enable");
+    		$('#pwm2Slider').slider("enable");
+    	}
+    	else {
+    		socket.emit('ioenable', "disable");
+    		$('#pwm0Slider').slider("disable");
+    		$('#pwm1Slider').slider("disable");
+    		$('#pwm2Slider').slider("disable");
+    	}
+    });       
 
     $("#graphenable").buttonset();
     $("#graphenable :checkbox").click(function(){
