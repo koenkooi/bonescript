@@ -207,6 +207,17 @@ setup = function() {
             socket.emit('PWM', [pwm2duty, pwm4duty, pwm6duty]);
         });
 
+        socket.on('getTempPWM', function() {
+            var ainPWM = new Array(7);
+            ainPWM[1] = pwmRead(bone.P8_46) * 100;
+            ainPWM[3] = pwmRead(bone.P8_45) * 100;
+            ainPWM[5] = pwmRead(bone.P9_14) * 100;
+            ainPWM[2] = readAIN(inputPinAIN2, 2);
+            ainPWM[4] = readAIN(inputPinAIN4, 4);
+            ainPWM[6] = readAIN(inputPinAIN6, 6);
+            socket.emit('ainPWM', ainPWM);
+        });
+
         // on disconnect
         socket.on('disconnect', function() {
             console.log("Client disconnected.");
