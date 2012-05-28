@@ -229,8 +229,5 @@ setup = function() {
     server.begin();
 };
 
-loop = function() {
-}
-
 bb.run();
 
