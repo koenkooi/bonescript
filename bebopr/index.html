@@ -114,11 +114,13 @@ var sketchProc = function(p) {
                 	for (var point in graphData[i]) {
                 		nextY = ((window.rangeHigh - graphData[i][point]) * scaleY);
                 		if (point != 0) {
-                			p.line(lastX, lastY, nextX, nextY);
+                			if(graphData[i][point] > 0)
+                                p.line(lastX, lastY, nextX, nextY);
                 			lastX += stepX;
                 		}
                 		nextX += stepX;
-                		lastY = nextY;
+                		if(graphData[i][point] > 0)
+                            lastY = nextY;
                 	}
                 	p.text(Math.round(graphData[i][point]), p.width - 20, lastY - 2);
                 	p.text("AIN" + (i + 1) * 2 + ": " + Math.round(graphData[i][point] * 10) / 10, p.width - 64, 16 * (i + 1));
@@ -141,6 +143,22 @@ socket.on('ain', function(data) {
 
     if(!data[6])
         data[6] = 0;
+
+    if (data[2] > 230) {
+    	pwm0value = $('#pwm0Slider').slider("option", "value");
+    	socket.emit('pwmdutypercent', [0, pwm0value * 0.50]);
+    }
+    
+    if (data[4] > 230) {
+    	pwm0value = $('#pwm1Slider').slider("option", "value");
+    	socket.emit('pwmdutypercent', [1, pwm1value * 0.50]);
+    }
+    
+    if (data[6] > 230) {
+    	pwm0value = $('#pwm2Slider').slider("option", "value");
+    	socket.emit('pwmdutypercent', [1, pwm1value * 0.50]);
+    }
+
 
     //document.getElementById("ain2temp").innerHTML="AIN2: " + data[2] + "&#8451";
     //document.getElementById("ain4temp").innerHTML="AIN4: " + data[4] + "&#8451";
