@@ -3,6 +3,8 @@
 var bb = require('bonescript');
 var fs = require('fs');
 var io = require('socket.io');
+    
+var path = require('path');
 
 var tempLUT = 
 {
@@ -77,6 +79,12 @@ ainTemp = new Array();
 var inputPinAIN2 = bone.P9_40;
 var inputPinAIN4 = bone.P9_38;
 var inputPinAIN6 = bone.P9_36;
+
+// Set IO enable pins to disabled.
+if(!path.existsSync('/sys/class/gpio/gpio38/value')) {
+    pinMode(bone.P8_3, 'out', 7, 'pulldown', 'slow');
+    pinMode(bone.P8_5, 'out', 7, 'pullup', 'slow');
+}
 
 pwmRead = exports.pwmRead = function(pin, callback) {
     if(!pin.pwm) {
