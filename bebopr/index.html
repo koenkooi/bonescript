@@ -7,8 +7,8 @@
 <script src="js/jquery-ui-1.8.20.custom.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 	<style type="text/css">
-		/*demo page css*/
 		body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}
+        div.graphstuff{width: 600px;}        
 	</style>
 </head>
 <body>
@@ -19,19 +19,26 @@
 	<input type="radio" id="iodisabled" name="radio" checked="checked" /><label for="iodisabled">Disabled</label>
 </div><br/><br/>
 
-<canvas id="ain2Canvas">2</canvas>
-<div>
-    PWM0 duty cycle %
-    <div id="pwm0Slider"></div>
-</div><br>
-<div>
-    PWM1 duty cycle %
-    <div id="pwm1Slider"></div>
-</div><br>
-<div>
-    PWM2 duty cycle %
-    <div id="pwm2Slider"></div>
-</div><br>
+<div class="graphstuff">
+    <canvas id="ainCanvas">2</canvas>
+    <center><div id="graphenable">
+        <input type="checkbox" id="AIN2" checked="true"/><label for="AIN2">AIN2</label>
+    	<input type="checkbox" id="AIN4" /><label for="AIN4">AIN4</label>
+    	<input type="checkbox" id="AIN6" /><label for="AIN6">AIN6</label>
+    </div></center>
+    <div>
+        PWM0 duty cycle %
+        <div id="pwm0Slider"></div>
+    </div><br>
+    <div>
+        PWM1 duty cycle %
+        <div id="pwm1Slider"></div>
+    </div><br>
+    <div>
+        PWM2 duty cycle %
+        <div id="pwm2Slider"></div>
+    </div><br>
+</div>
 
 <h2>Status:</h2>
 <p><span id="status">Not yet connected</span></p>
@@ -50,6 +57,8 @@ graphData = new Array(3);
 graphData[0] = new Array(graphDataSize);
 graphData[1] = new Array(graphDataSize);
 graphData[2] = new Array(graphDataSize);
+
+graphEnabled = [1,0,0];
 
 var sketchProc = function(p) {
 		p.size(600, 250);
@@ -95,35 +104,33 @@ var sketchProc = function(p) {
             
 			// draw graph
             for (i = 0; i < 3; i = i + 1) {
-            	p.stroke((i%3)*255, (i%2)*255, 255);
-            	p.strokeWeight(1);
-                p.fill((i%3)*255, (i%2)*255, 255);
-            	var lastX = 0,
-            		nextX = 0,
-            		lastY, nextY;
-            	for (var point in graphData[i]) {
-            		nextY = ((window.rangeHigh - graphData[i][point]) * scaleY);
-            		if (point != 0) {
-            			p.line(lastX, lastY, nextX, nextY);
-            			lastX += stepX;
-            		}
-            		nextX += stepX;
-            		lastY = nextY;
-            	}
-                p.text(Math.round(graphData[i][point]) , p.width - 20, lastY - 2);
-                p.text("AIN" + (i+1)*2 + ": " + Math.round(graphData[i][point]*10)/10, p.width - 60, 16*(i+1));
+                if (graphEnabled[i] == 1) {
+                	p.stroke((i % 3) * 255, (i % 2) * 255, 255);
+                	p.strokeWeight(1);
+                	p.fill((i % 3) * 255, (i % 2) * 255, 255);
+                	var lastX = 0,
+                		nextX = 0,
+                		lastY, nextY;
+                	for (var point in graphData[i]) {
+                		nextY = ((window.rangeHigh - graphData[i][point]) * scaleY);
+                		if (point != 0) {
+                			p.line(lastX, lastY, nextX, nextY);
+                			lastX += stepX;
+                		}
+                		nextX += stepX;
+                		lastY = nextY;
+                	}
+                	p.text(Math.round(graphData[i][point]), p.width - 20, lastY - 2);
+                	p.text("AIN" + (i + 1) * 2 + ": " + Math.round(graphData[i][point] * 10) / 10, p.width - 64, 16 * (i + 1));
+                }
             }
 		};
 
 		p.noLoop();
 	}
 
-var ain2canvas = document.getElementById("ain2Canvas");
-var processing = new Processing(ain2canvas, sketchProc);
-
-ain2Temp = 0;
-ain4Temp = 0;
-ain6Temp = 0;
+var aincanvas = document.getElementById("ainCanvas");
+var processing = new Processing(aincanvas, sketchProc);
 
 socket.on('ain', function(data) {
     if(!data[2])
@@ -182,7 +189,29 @@ $(function() {
             socket.emit('ioenable',"disable");
     });          
 
-    
+    $("#graphenable").buttonset();
+    $("#graphenable :checkbox").click(function(){
+        //alert($(this).attr("id") + " " + $(this).is(":checked"));
+        if($(this).attr("id") == "AIN2") {
+            if ($(this).is(":checked"))
+                graphEnabled[0] = 1;
+            else
+                graphEnabled[0] = 0;
+        }
+        if($(this).attr("id") == "AIN4") {
+            if ($(this).is(":checked"))
+                graphEnabled[1] = 1;
+            else
+                graphEnabled[1] = 0;
+        }
+        if($(this).attr("id") == "AIN6") {
+            if ($(this).is(":checked"))
+                graphEnabled[2] = 1;
+            else
+                graphEnabled[2] = 0;
+        }
+    });
+
     // only report changes if they weren't done programatically via getPWM
     $('#pwm0Slider').slider({ min: 0, max: 100, step: 1, animate: true,
         change: function(event, ui) {  
