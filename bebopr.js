@@ -187,7 +187,7 @@ setup = function() {
                     analogWrite(bone.P8_45, pwmvalue);
                     break;
                 case 2:
-                    analogWrite(bone.P9_14, pwmvalue);
+                    analogWrite(bone.P9_14, pwmvalue, 20000);
                     break;
             }
             console.log("PWM" + pwm + ": " + pwmvalue);
