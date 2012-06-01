@@ -5,6 +5,8 @@
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.20.custom.css" rel="stylesheet" />
 <script src="js/jquery-1.7.2.min.js"></script>
 <script src="js/jquery-ui-1.8.20.custom.min.js"></script>
+<script src="js/jquery.flot.js"></script>
+<script src="js/date.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 	<style type="text/css">
 		body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}
@@ -20,10 +22,10 @@
 </div><br/><br/>
 
 <div class="graphstuff">
-    <canvas id="ainCanvas">2</canvas>
+    <div id="ainplot" style="width:600px;height:300px;"></div>
     <center><div id="graphenable">
         <input type="checkbox" id="AIN2" checked="true"/><label for="AIN2">AIN2</label>
-    	<input type="checkbox" id="AIN4" /><label for="AIN4">AIN4</label>
+    	<input type="checkbox" id="AIN4" checked="true"/><label for="AIN4">AIN4</label>
     	<input type="checkbox" id="AIN6" /><label for="AIN6">AIN6</label>
     </div></center>
     <div>
@@ -53,86 +55,57 @@ socket.on('connect', function() {
 });
 
 var graphDataSize = 300;
-graphData = new Array(3);
-graphData[0] = new Array(graphDataSize);
-graphData[1] = new Array(graphDataSize);
-graphData[2] = new Array(graphDataSize);
 
-graphEnabled = [1,0,0];
+ain2Name = "Extruder";
+ain4Name = "Heatbed";
+ain6Name = "Ambient";
 
-var sketchProc = function(p) {
-		p.size(600, 250);
-        
-		// variables referenced elsewhere
-		window.height = p.height;
+flotData = new Array(3);
+flotData[0] = new Array(graphDataSize);
+flotData[1] = new Array(graphDataSize);
+flotData[2] = new Array(graphDataSize);
 
-		// variables that might get updated
-		window.rangeLow = 0;
-		window.rangeHigh = 250;
-		window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
+graphEnabled = [1,1,0];
 
-		// local variables
-		var stepX = p.width / (graphDataSize - 1);
-		var bottomY = window.height - 1;
-		p.draw = function() {
-            p.fill(255);
-			// erase background
-			p.background(224);
-
-			// draw axis
-			p.stroke(25);
-			p.strokeWeight(1);
-			p.line(0, bottomY, p.width, bottomY);
-
-            p.fill(0);
-            p.stroke(150);
-            for (lineY = 0 ; lineY < window.rangeHigh + 1 ; lineY = lineY + 5) {
-            	for (dashValue = 0; dashValue < p.width ; dashValue = dashValue + 5) {
-    				dashPoint = 1;
-	    			p.line(dashValue * dashPoint, lineY, (dashValue * dashPoint) , lineY);
-		    	}
-            }
-            p.stroke(25);
-
-            for (lineY = 0 ; lineY < window.rangeHigh + 1 ; lineY = lineY + 50) {
-                p.text(250 - lineY , 0, lineY - 2);
-    			for (dashValue = 0; dashValue < p.width/10 ; dashValue = dashValue + 1) {
-    				dashPoint = 10;
-	    			p.line(dashValue * dashPoint, lineY, (dashValue * dashPoint) + 5, lineY);
-		    	}
-            }
-            
-			// draw graph
-            for (i = 0; i < 3; i = i + 1) {
-                if (graphEnabled[i] == 1) {
-                	p.stroke((i % 3) * 255, (i % 2) * 255, 255);
-                	p.strokeWeight(1);
-                	p.fill((i % 3) * 255, (i % 2) * 255, 255);
-                	var lastX = 0,
-                		nextX = 0,
-                		lastY, nextY;
-                	for (var point in graphData[i]) {
-                		nextY = ((window.rangeHigh - graphData[i][point]) * scaleY);
-                		if (point != 0) {
-                			if(graphData[i][point] > 0)
-                                p.line(lastX, lastY, nextX, nextY);
-                			lastX += stepX;
-                		}
-                		nextX += stepX;
-                		if(graphData[i][point] > 0)
-                            lastY = nextY;
-                	}
-                	p.text(Math.round(graphData[i][point]), p.width - 20, lastY - 2);
-                	p.text("AIN" + (i + 1) * 2 + ": " + Math.round(graphData[i][point] * 10) / 10, p.width - 64, 16 * (i + 1));
-                }
-            }
-		};
-
-		p.noLoop();
-	}
-
-var aincanvas = document.getElementById("ainCanvas");
-var processing = new Processing(aincanvas, sketchProc);
+function updatePlot() {
+    
+    var datasets = [
+        {
+    		label: ain2Name,
+    		data: flotData[0],
+            color: "#333",
+    	},
+    	{
+    		label: ain4Name,
+    		data: flotData[1],
+            color: "#0ff",
+    	},
+    	{
+    		label: ain6Name,
+    		data: flotData[2],
+            color: "#ff0",
+    	}
+    ];
+    var flotPlot = [];
+    for (i = 0; i < 3; i = i + 1) {
+        if (graphEnabled[i] == 1) {
+            flotPlot.push(datasets[i]);
+        }
+    }
+    
+    $.plot($("#ainplot"), flotPlot, {
+    	xaxis: {
+    		mode: "time",
+    		minTickSize: [1, "minute"],
+    		min: (new Date()).getTime() - 300 * 1000,
+    		max: (new Date()).getTime()
+    	},
+    	yaxis: {
+    		min: 0,
+    		max: 250,
+    	}
+    });     
+}
 
 socket.on('ain', function(data) {
     if(!data[2])
@@ -164,14 +137,17 @@ socket.on('ain', function(data) {
     //document.getElementById("ain4temp").innerHTML="AIN4: " + data[4] + "&#8451";
     //document.getElementById("ain6temp").innerHTML="AIN6: " +data[6] + "&#8451";
     
-     for (j = 0; j < 3 ; j = j +1) {
-         var myData = parseFloat(data[(j+1)*2]);
-         for (var i = 0; i < graphDataSize - 1; i++) {
-         	window.graphData[j][i] = window.graphData[j][i + 1];
-         }
-         window.graphData[j][i] = myData;
-     }
-     processing.redraw();
+    for (j = 0; j < 3; j = j + 1) {
+        var myData = parseFloat(data[(j + 1) * 2]);
+        if (myData > 0) {
+         	for (var i = 0; i < graphDataSize - 1; i++) {
+         		flotData[j][i] = flotData[j][i + 1];
+            }
+            flotData[j][i] = [data[0], myData];
+        }
+    }
+        
+    updatePlot();
     
     setTimeout(function() {socket.emit('getTemp', 1);}, 1000);
 });
@@ -197,6 +173,19 @@ socket.emit('getTemp', 1);
 socket.emit('getPWM', 1);
 
 $(function() {
+
+    $.plot($("#ainplot"), [flotData[0], flotData[2], flotData[2]], {
+    	xaxis: {
+    		mode: "time",
+    		minTickSize: [1, "minute"],
+    		min: (new Date()).getTime() - 300 * 1000,
+    		max: (new Date()).getTime()
+    	},
+    	yaxis: {
+    		min: 0
+    	}
+    });
+
     $("#radio").buttonset();
     socket.emit('ioenable', "read");
     $("#radio :radio").click(function() {
@@ -236,7 +225,7 @@ $(function() {
             else
                 graphEnabled[2] = 0;
         }
-        processing.redraw();
+        updatePlot();
     });
 
     // only report changes if they weren't done programatically via getPWM

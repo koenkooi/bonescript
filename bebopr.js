@@ -194,21 +194,23 @@ setup = function() {
         });
 
         socket.on('getTemp', function() {
+            ainTemp[0] = new Date().getTime();
             ainTemp[2] = readAIN(inputPinAIN2, 2);
             ainTemp[4] = readAIN(inputPinAIN4, 4);
             ainTemp[6] = readAIN(inputPinAIN6, 6);
             socket.emit('ain', ainTemp);
         });
         
-        socket.on('getPWM', function() {
+        socket.on('getPWM', function() {            
             pwm2duty = pwmRead(bone.P8_46) * 100;
             pwm4duty = pwmRead(bone.P8_45) * 100;
             pwm6duty = pwmRead(bone.P9_14) * 100;
-            socket.emit('PWM', [pwm2duty, pwm4duty, pwm6duty]);
+            socket.emit('PWM', [pwm2duty, pwm4duty, pwm6duty, new Date().getTime()]);
         });
 
         socket.on('getTempPWM', function() {
             var ainPWM = new Array(7);
+            ainPWM[0] = new Date().getTime();
             ainPWM[1] = pwmRead(bone.P8_46) * 100;
             ainPWM[3] = pwmRead(bone.P8_45) * 100;
             ainPWM[5] = pwmRead(bone.P9_14) * 100;
