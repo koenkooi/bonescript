@@ -57,9 +57,9 @@ socket.on('connect', function() {
 // data size, should be larger than update frequency * 300 seconds
 var graphDataSize = 1000;
 
-ain2Name = "2: Heatbed";
-ain4Name = "4: Ambient";
-ain6Name = "6: Extruder";
+ain2Name = "Heatbed";
+ain4Name = "Ambient";
+ain6Name = "Extruder";
 
 flotData = new Array(3);
 flotData[0] = new Array(graphDataSize);
@@ -222,7 +222,6 @@ socket.on('PWM', function(data) {
 
 socket.on('ioenableState', function(data) {
     if(data > 0)
-        //$( "#radio" ).button( "option", "enabled", true ).button("refresh");
         $('#ioenabled').attr('checked','checked').button("refresh");
 });
 
@@ -244,6 +243,7 @@ $(function() {
     });
 
     $("#radio").buttonset();
+    
     socket.emit('ioenable', "read");
     $("#radio :radio").click(function() {
     	//alert($(this).attr("id"));
@@ -262,6 +262,9 @@ $(function() {
     });       
 
     $("#graphenable").buttonset();
+    $("#AIN2").button('option', 'label', ain2Name);
+    $("#AIN4").button('option', 'label', ain4Name);
+    $("#AIN6").button('option', 'label', ain6Name);
     $("#graphenable :checkbox").click(function(){
         //alert($(this).attr("id") + " " + $(this).is(":checked"));
         if($(this).attr("id") == "AIN2") {
