@@ -122,7 +122,6 @@ function readAIN(inputPin, ainIndex) {
 	var value;
 
 	for (i = 0; i < smoothArray.length; i = i + 1) {
-        delay(50);
 		smoothArray[i] = analogRead(inputPin) * 4096;
 	}
     

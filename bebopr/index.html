@@ -149,7 +149,7 @@ socket.on('ain', function(data) {
         
     updatePlot();
     
-    setTimeout(function() {socket.emit('getTemp', 1);}, 1000);
+    setTimeout(function() {socket.emit('getTemp', 1);}, 500);
 });
 
 socket.on('PWM', function(data) {
