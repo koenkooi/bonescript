@@ -54,7 +54,8 @@ socket.on('connect', function() {
     document.getElementById("status").innerHTML="Connected";
 });
 
-var graphDataSize = 750;
+// data size, should be larger than update frequency * 300 seconds
+var graphDataSize = 1000;
 
 ain2Name = "2: Heatbed";
 ain4Name = "4: Ambient";
@@ -65,13 +66,31 @@ flotData[0] = new Array(graphDataSize);
 flotData[1] = new Array(graphDataSize);
 flotData[2] = new Array(graphDataSize);
 
+// Use a running average to smooth out the AIN plots
+smoothLength = 12;
+smooth = new Array(3);
+smooth[0] = new Array(smoothLength);
+smooth[1] = new Array(smoothLength);
+smooth[2] = new Array(smoothLength);
+
 pwmData = new Array(3);
 pwmData[0] = new Array(graphDataSize);
 pwmData[1] = new Array(graphDataSize);
 pwmData[2] = new Array(graphDataSize);
 
-
 graphEnabled = [1,1,1];
+
+average = function(a) {
+	var r = {
+		mean: 0,
+		variance: 0,
+		deviation: 0
+	},
+		t = a.length;
+	for (var m, s = 0, l = t; l--; s += a[l]);
+	for (m = r.mean = s / t, l = t, s = 0; l--; s += Math.pow(a[l] - m, 2));
+	return r.deviation = Math.sqrt(r.variance = s / t), r;
+}
 
 function updatePlot() {
     
@@ -161,20 +180,22 @@ socket.on('ain', function(data) {
     //document.getElementById("ain2temp").innerHTML="AIN2: " + data[2] + "&#8451";
     //document.getElementById("ain4temp").innerHTML="AIN4: " + data[4] + "&#8451";
     //document.getElementById("ain6temp").innerHTML="AIN6: " +data[6] + "&#8451";
-    
-    for (j = 0; j < 3; j = j + 1) {
+        
+    for (j = 0; j < 3; j++) {
         var myData = parseFloat(data[(j + 1) * 2]);
         if (myData > 0) {
+            for (var s = 0; s < smoothLength - 1; s++) {
+             	smooth[j][s] = smooth[j][s + 1];
+            }
+            smooth[j][s] = myData;
          	for (var i = 0; i < graphDataSize - 1; i++) {
          		flotData[j][i] = flotData[j][i + 1];
             }
-            flotData[j][i] = [data[0], myData];
+            flotData[j][i] = [data[0], average(smooth[j]).mean];
         }
     }
         
-    updatePlot();
-    
-    setTimeout(function() {socket.emit('getTemp', 1);}, 500);
+    setTimeout(function() {socket.emit('getTemp', 1);}, 300);
 });
 
 socket.on('PWM', function(data) {
@@ -187,14 +208,15 @@ socket.on('PWM', function(data) {
     $('#pwm2Slider').slider( "option", "value", pwm2dutypercent );
     
     for (j = 0; j < 3; j = j + 1) {
-        if (data[j] > 0) {
+        if (data[j] > -1) {
              for (var i = 0; i < graphDataSize - 1; i++) {
          		pwmData[j][i] = pwmData[j][i + 1];
             }
             pwmData[j][i] = [data[3], data[j]];
         }
     }    
-    
+
+    updatePlot();
     setTimeout(function() {socket.emit('getPWM', 1);}, 1000);
 });
 
