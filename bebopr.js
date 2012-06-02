@@ -180,10 +180,10 @@ setup = function() {
             pwmvalue = data[1] / 100;
             switch(pwm) {
                 case 0:
-                    analogWrite(bone.P8_46, pwmvalue);
+                    analogWrite(bone.P8_46, pwmvalue, 20000);
                     break;
                 case 1:
-                    analogWrite(bone.P8_45, pwmvalue);
+                    analogWrite(bone.P8_45, pwmvalue, 20000);
                     break;
                 case 2:
                     analogWrite(bone.P9_14, pwmvalue, 20000);
