@@ -29,15 +29,15 @@
     	<input type="checkbox" id="AIN6" checked="true"/><label for="AIN6">AIN6</label>
     </div></center>
     <div>
-        Fan duty cycle %
+        <span id="pwm0name">PWM0</span> duty cycle %
         <div id="pwm0Slider"></div>
     </div><br>
     <div>
-        Extruder duty cycle %
+        <span id="pwm1name">PWM1</span> duty cycle %
         <div id="pwm1Slider"></div>
     </div><br>
     <div>
-        Heatbed duty cycle %
+        <span id="pwm2name">PWM2</span> duty cycle %
         <div id="pwm2Slider"></div>
     </div><br>
 </div>
@@ -60,6 +60,10 @@ var graphDataSize = 1000;
 ain2Name = "Heatbed";
 ain4Name = "Ambient";
 ain6Name = "Extruder";
+
+pwm0Name = "Fan";
+pwm1Name = "Extruder";
+pwm2Name = "Heatbed";
 
 flotData = new Array(3);
 flotData[0] = new Array(graphDataSize);
@@ -101,7 +105,7 @@ function updatePlot() {
             color: "#333",
     	},
         {
-    		label: ain2Name + " duty cycle",
+    		label: pwm2Name + " duty cycle",
             line: { show: true, fill: 0.05, lineWidth: 0.1 },
     		data: pwmData[2],
             color: "#888",
@@ -112,7 +116,7 @@ function updatePlot() {
             color: "#0ff",
     	},
         {
-    		label: ain4Name + " duty cycle",
+    		label: pwm0Name + " duty cycle",
             lines: { show: true, fill: 0.05, lineWidth: 0.1 },
     		data: pwmData[0],
             color: "0aa",
@@ -123,7 +127,7 @@ function updatePlot() {
             color: "#ff0",
     	},
         {
-    		label: ain6Name + " duty cycle",
+    		label: pwm1Name + " duty cycle",
             lines: { show: true, fill: 0.05, lineWidth: 0.1 },
     		data: pwmData[1],
             color: "#aa0",
@@ -262,9 +266,16 @@ $(function() {
     });       
 
     $("#graphenable").buttonset();
+
+    //set proper names for AIN and PWM functions
     $("#AIN2").button('option', 'label', ain2Name);
     $("#AIN4").button('option', 'label', ain4Name);
     $("#AIN6").button('option', 'label', ain6Name);
+    
+    $("#pwm0name").text(pwm0Name);
+    $("#pwm1name").text(pwm1Name);
+    $("#pwm2name").text(pwm2Name);
+    
     $("#graphenable :checkbox").click(function(){
         //alert($(this).attr("id") + " " + $(this).is(":checked"));
         if($(this).attr("id") == "AIN2") {
