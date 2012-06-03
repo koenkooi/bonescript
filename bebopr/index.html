@@ -47,15 +47,20 @@
 
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="js/processing-1.3.6.min.js"></script>
 <script type="text/javascript">
 var socket = new io.connect();
 socket.on('connect', function() {
     document.getElementById("status").innerHTML="Connected";
 });
 
-// data size, should be larger than update frequency * 300 seconds
-var graphDataSize = 1000;
+var tempUpdatems = 500;
+var pwmUpdatems = 1000;
+
+graphRangesecs = 400;
+
+// data size, should be larger than update frequency * graph range seconds
+// 1000 * graphRangesecs / tempUpdatems
+var graphDataSize = 1500;
 
 ain2Name = "Heatbed";
 ain4Name = "Ambient";
@@ -145,7 +150,7 @@ function updatePlot() {
     	xaxis: {
     		mode: "time",
     		minTickSize: [1, "minute"],
-    		min: (new Date()).getTime() - 300 * 1000,
+    		min: (new Date()).getTime() - graphRangesecs * 1000,
     		max: (new Date()).getTime()
     	},
     	yaxis: {
@@ -199,7 +204,7 @@ socket.on('ain', function(data) {
         }
     }
         
-    setTimeout(function() {socket.emit('getTemp', 1);}, 300);
+    setTimeout(function() {socket.emit('getTemp', 1);}, tempUpdatems);
 });
 
 socket.on('PWM', function(data) {
@@ -221,7 +226,7 @@ socket.on('PWM', function(data) {
     }    
 
     updatePlot();
-    setTimeout(function() {socket.emit('getPWM', 1);}, 1000);
+    setTimeout(function() {socket.emit('getPWM', 1);}, pwmUpdatems);
 });
 
 socket.on('ioenableState', function(data) {
