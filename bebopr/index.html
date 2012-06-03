@@ -54,6 +54,7 @@ socket.on('connect', function() {
 
 var tempUpdatems = 500;
 var pwmUpdatems = 1000;
+var updatePlotms = 1000;
 
 graphRangesecs = 400;
 
@@ -145,18 +146,22 @@ function updatePlot() {
         }
     }
     
+    var now = (new Date()).getTime();
+    
     $.plot($("#ainplot"), flotPlot, {
     	xaxis: {
     		mode: "time",
     		minTickSize: [1, "minute"],
-    		min: (new Date()).getTime() - graphRangesecs * 1000,
-    		max: (new Date()).getTime()
+    		min: now - graphRangesecs * 1000,
+    		max: now,
     	},
     	yaxis: {
     		min: 0,
     		max: 250,
     	}
-    });     
+    });  
+    
+    setTimeout(function() { updatePlot(); }, updatePlotms);
 }
 
 socket.on('ain', function(data) {
@@ -224,7 +229,6 @@ socket.on('PWM', function(data) {
         }
     }    
 
-    updatePlot();
     setTimeout(function() {socket.emit('getPWM', 1);}, pwmUpdatems);
 });
 
@@ -238,17 +242,7 @@ socket.emit('getPWM', 1);
 
 $(function() {
 
-    $.plot($("#ainplot"), [flotData[0], flotData[2], flotData[2]], {
-    	xaxis: {
-    		mode: "time",
-    		minTickSize: [1, "minute"],
-    		min: (new Date()).getTime() - 300 * 1000,
-    		max: (new Date()).getTime()
-    	},
-    	yaxis: {
-    		min: 0
-    	}
-    });
+    updatePlot();
 
     $("#radio").buttonset();
     
