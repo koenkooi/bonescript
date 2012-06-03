@@ -53,14 +53,14 @@ socket.on('connect', function() {
 });
 
 var tempUpdatems = 500;
-var pwmUpdatems = 1000;
+var pwmUpdatems = 500;
 var updatePlotms = 1000;
 
 graphRangesecs = 400;
 
 // data size, should be larger than update frequency * graph range seconds
 // 1000 * graphRangesecs / tempUpdatems
-var graphDataSize = 1500;
+var graphDataSize = (1000 * graphRangesecs / tempUpdatems) * 1.2;
 
 ain2Name = "Heatbed";
 ain4Name = "Ambient";
@@ -216,12 +216,12 @@ socket.on('PWM', function(data) {
     pwm1dutypercent = data[1];
     pwm2dutypercent  = data[2];
     
-    $('#pwm0Slider').slider( "option", "value", pwm0dutypercent );
-    $('#pwm1Slider').slider( "option", "value", pwm1dutypercent );
-    $('#pwm2Slider').slider( "option", "value", pwm2dutypercent );
+    $('#pwm0Slider').slider( "value", pwm0dutypercent );
+    $('#pwm1Slider').slider( "value", pwm1dutypercent );
+    $('#pwm2Slider').slider( "value", pwm2dutypercent );
     
     for (j = 0; j < 3; j = j + 1) {
-        if (data[j] > -1) {
+        if (data[j] < 101) {
              for (var i = 0; i < graphDataSize - 1; i++) {
          		pwmData[j][i] = pwmData[j][i + 1];
             }
