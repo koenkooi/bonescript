@@ -111,7 +111,7 @@ function updatePlot() {
     	},
         {
     		label: pwm2Name + " duty cycle",
-            line: { show: true, fill: 0.05, lineWidth: 1 },
+            lines: { show: true, fill: 0.05, lineWidth: 1 },
     		data: pwmData[2],
             color: "#888",
     	},        
@@ -186,9 +186,8 @@ socket.on('ain', function(data) {
     
     if (data[6] > 230) {
     	pwm0value = $('#pwm2Slider').slider("option", "value");
-    	socket.emit('pwmdutypercent', [1, pwm1value * 0.50]);
+    	socket.emit('pwmdutypercent', [1, pwm2value * 0.50]);
     }
-
 
     //document.getElementById("ain2temp").innerHTML="AIN2: " + data[2] + "&#8451";
     //document.getElementById("ain4temp").innerHTML="AIN4: " + data[4] + "&#8451";
@@ -294,7 +293,7 @@ $(function() {
             else
                 graphEnabled[2] = 0;
         }
-        updatePlot();
+        //updatePlot();
     });
 
     // only report changes if they weren't done programatically via getPWM
