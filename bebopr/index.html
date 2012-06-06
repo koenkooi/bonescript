@@ -47,9 +47,13 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script type="text/javascript">
+
+var counter = -1;
+
 var socket = new io.connect();
 socket.on('connect', function() {
     document.getElementById("status").innerHTML="Connected";
+    counter = 1;
 });
 
 var tempUpdatems = 500;
@@ -161,7 +165,12 @@ function updatePlot() {
     	}
     });  
     
-    setTimeout(function() { updatePlot(); }, updatePlotms);
+}
+
+function updatePlotloop() {
+    if(counter > 0)
+        updatePlot();
+    setTimeout(function() { updatePlotloop(); }, updatePlotms);   
 }
 
 socket.on('ain', function(data) {
@@ -236,12 +245,17 @@ socket.on('ioenableState', function(data) {
         $('#ioenabled').attr('checked','checked').button("refresh");
 });
 
+socket.on('disconnect', function() {
+    document.getElementById("status").innerHTML="Disconnected";
+    counter = -1;
+});
+
 socket.emit('getTemp', 1);
 socket.emit('getPWM', 1);
 
 $(function() {
 
-    updatePlot();
+    updatePlotloop();
 
     $("#radio").buttonset();
     
@@ -293,7 +307,7 @@ $(function() {
             else
                 graphEnabled[2] = 0;
         }
-        //updatePlot();
+        updatePlot();
     });
 
     // only report changes if they weren't done programatically via getPWM
