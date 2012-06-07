@@ -172,6 +172,11 @@ function updatePlotloop() {
     setTimeout(function() { updatePlotloop(); }, updatePlotms);   
 }
 
+function ioCheck() {
+    socket.emit('ioenable', "read");
+    setTimeout(function() { ioCheck(); }, 1000);  
+}
+
 socket.on('ain', function(data) {
     counter = 1;
     if(!data[2])
@@ -243,7 +248,9 @@ socket.on('PWM', function(data) {
 
 socket.on('ioenableState', function(data) {
     if(data > 0)
-        $('#ioenabled').attr('checked','checked').button("refresh");
+        $('#ioenabled').attr('checked', true).button("refresh");
+    else
+        $('#iodisabled').attr('checked', true).button("refresh");
 });
 
 socket.on('disconnect', function() {
@@ -260,7 +267,7 @@ $(function() {
 
     $("#radio").buttonset();
     
-    socket.emit('ioenable', "read");
+    ioCheck();
     $("#radio :radio").click(function() {
     	//alert($(this).attr("id"));
     	if ($(this).attr("id") == "ioenabled") {
