@@ -53,7 +53,6 @@ var counter = -1;
 var socket = new io.connect();
 socket.on('connect', function() {
     document.getElementById("status").innerHTML="Connected";
-    counter = 1;
 });
 
 var tempUpdatems = 500;
@@ -174,6 +173,7 @@ function updatePlotloop() {
 }
 
 socket.on('ain', function(data) {
+    counter = 1;
     if(!data[2])
         data[2] = 0;
 
@@ -220,6 +220,7 @@ socket.on('ain', function(data) {
 });
 
 socket.on('PWM', function(data) {
+    counter = 1;
     pwm0dutypercent = data[0];
     pwm1dutypercent = data[1];
     pwm2dutypercent  = data[2];
