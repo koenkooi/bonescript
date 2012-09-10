@@ -80,6 +80,8 @@ var inputPinAIN2 = bone.P9_40;
 var inputPinAIN4 = bone.P9_38;
 var inputPinAIN6 = bone.P9_36;
 
+w1Zsensor = '28-000003ceb5e3';
+
 // Set IO enable pins to disabled.
 if(!path.existsSync('/sys/class/gpio/gpio38/value')) {
     pinMode(bone.P8_3, 'out', 7, 'pulldown', 'slow');
@@ -144,6 +146,18 @@ function readAIN(inputPin, ainIndex) {
 	return temp
 }
 
+function readW1(w1slave) {
+	w1tscale = 1000;
+	w1tfileData = '/sys/bus/w1/drivers/w1_slave_driver/' + w1slave + '/w1_slave';
+
+	w1data = fs.readFileSync(w1tfileData);
+	w1data = '' + w1data;
+	w1Breakdown = w1data.split("\n");
+	temp = w1Breakdown[1].split("t=")[1] / w1tscale;
+	
+	return temp;
+}
+
 setup = function() {
     var onconnect = function(socket) {
         console.log("New client connected");
@@ -170,7 +184,7 @@ setup = function() {
             else
                     ioenable = 0;
             
-            console.log("IO enable: " + ioenable);
+            //console.log("IO enable: " + ioenable);
             socket.emit('ioenableState', ioenable);
         });    
         
@@ -197,6 +211,7 @@ setup = function() {
             ainTemp[2] = readAIN(inputPinAIN2, 2);
             ainTemp[4] = readAIN(inputPinAIN4, 4);
             ainTemp[6] = readAIN(inputPinAIN6, 6);
+            ainTemp[8] = readW1(w1Zsensor);
             socket.emit('ain', ainTemp);
         });
         
@@ -231,4 +246,5 @@ setup = function() {
 };
 
 bb.run();
+
 

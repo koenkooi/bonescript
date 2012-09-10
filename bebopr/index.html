@@ -1,3 +1,4 @@
+
 <html>
 <head>
 <title>Beaglebone + BeBoPr cape</title>
@@ -17,15 +18,24 @@
 
 <div id="radio">
     <input type="radio" id="ioenabled" name="radio" /><label for="ioenabled">Enabled</label>
-	<input type="radio" id="iodisabled" name="radio" checked="checked" /><label for="iodisabled">Disabled</label>
+    <input type="radio" id="iodisabled" name="radio" checked="checked" /><label for="iodisabled">Disabled</label>
 </div><br/><br/>
 
+<div id="tabs">
+    <ul>
+		<li><a href="#tabs-1">Graphs</a></li>
+		<li><a href="#tabs-2">Dashboard</a></li>
+		<li><a href="#tabs-3">Third tab</a></li>
+	</ul>
+
+<div id="tabs-1">
 <div class="graphstuff">
     <div id="ainplot" style="width:100%;height:50%;"></div>
     <center><div id="graphenable">
         <input type="checkbox" id="AIN2" checked="true"/><label for="AIN2">AIN2</label>
     	<input type="checkbox" id="AIN4" checked="true"/><label for="AIN4">AIN4</label>
     	<input type="checkbox" id="AIN6" checked="true"/><label for="AIN6">AIN6</label>
+        <input type="checkbox" id="AIN8" checked="true"/><label for="AIN8">AIN8</label>
     </div></center>
     <div>
         <span id="pwm0name">PWM0</span> duty cycle %
@@ -39,6 +49,26 @@
         <span id="pwm2name">PWM2</span> duty cycle %
         <div id="pwm2Slider"></div>
     </div><br>
+</div>
+</div>
+
+<div id="tabs-2">
+        <table>
+            <tr>
+                <td align="center"><div id="pwm0vSlider" style="display: inline-block;"></div></td>
+                <td align="center"><div id="pwm1vSlider" style="display: inline-block;"></div></td>
+                <td align="center"><div id="pwm2vSlider" style="display: inline-block;"></div></td>
+            </tr>
+            <tr>
+                <td align="center"><span id="vpwm0name">PWM0</span></td>
+                <td align="center"><span id="vpwm1name">PWM1</span></td>
+                <td align="center"><span id="vpwm2name">PWM2</span></td>
+            </tr>
+        </table>
+</div>
+    
+<div id="tabs-3">3</div>
+
 </div>
 
 <h2>Status:</h2>
@@ -68,29 +98,32 @@ var graphDataSize = (1000 * graphRangesecs / tempUpdatems) * 1.2;
 ain2Name = "Heatbed";
 ain4Name = "Ambient";
 ain6Name = "Extruder";
+ain8Name = "Z Axis motor driver";
 
 pwm0Name = "Fan";
 pwm1Name = "Extruder";
 pwm2Name = "Heatbed";
 
-flotData = new Array(3);
+flotData = new Array(4);
 flotData[0] = new Array(graphDataSize);
 flotData[1] = new Array(graphDataSize);
 flotData[2] = new Array(graphDataSize);
+flotData[3] = new Array(graphDataSize);
 
 // Use a running average to smooth out the AIN plots
 smoothLength = 12;
-smooth = new Array(3);
+smooth = new Array(4);
 smooth[0] = new Array(smoothLength);
 smooth[1] = new Array(smoothLength);
 smooth[2] = new Array(smoothLength);
+smooth[3] = new Array(smoothLength);
 
-pwmData = new Array(3);
+pwmData = new Array(4);
 pwmData[0] = new Array(graphDataSize);
 pwmData[1] = new Array(graphDataSize);
 pwmData[2] = new Array(graphDataSize);
 
-graphEnabled = [1,1,1];
+graphEnabled = [1,1,1,1];
 
 average = function(a) {
 	var r = {
@@ -139,10 +172,19 @@ function updatePlot() {
             lines: { show: true, fill: 0.05, lineWidth: 1 },
     		data: pwmData[1],
             color: "#aa0",
-    	}        
+    	},        
+	{
+                label: ain8Name + " temperature",
+		data: flotData[3],
+                color: "#a0a",
+	},
+	{
+	        label: "",
+                data: 0,
+	},
     ];
     var flotPlot = [];
-    for (i = 0; i < 3; i = i + 1) {
+    for (i = 0; i < 4; i = i + 1) {
         if (graphEnabled[i] == 1) {
             flotPlot.push(datasets[i*2]);
             flotPlot.push(datasets[i*2 + 1])
@@ -156,7 +198,7 @@ function updatePlot() {
     		mode: "time",
     		minTickSize: [1, "minute"],
     		min: now - graphRangesecs * 1000,
-    		max: now,
+    		max: now - 3*1000,
     	},
     	yaxis: {
     		min: 0,
@@ -188,6 +230,9 @@ socket.on('ain', function(data) {
     if(!data[6])
         data[6] = 0;
 
+    if(!data[8])
+        data[8] = 0;
+
     if (data[2] > 230) {
     	pwm0value = $('#pwm0Slider').slider("option", "value");
     	socket.emit('pwmdutypercent', [0, pwm0value * 0.50]);
@@ -207,7 +252,7 @@ socket.on('ain', function(data) {
     //document.getElementById("ain4temp").innerHTML="AIN4: " + data[4] + "&#8451";
     //document.getElementById("ain6temp").innerHTML="AIN6: " +data[6] + "&#8451";
         
-    for (j = 0; j < 3; j++) {
+    for (j = 0; j < 4; j++) {
         var myData = parseFloat(data[(j + 1) * 2]);
         if (myData > 0) {
             for (var s = 0; s < smoothLength - 1; s++) {
@@ -233,6 +278,10 @@ socket.on('PWM', function(data) {
     $('#pwm0Slider').slider( "value", pwm0dutypercent );
     $('#pwm1Slider').slider( "value", pwm1dutypercent );
     $('#pwm2Slider').slider( "value", pwm2dutypercent );
+    
+    $('#pwm0vSlider').slider( "value", pwm0dutypercent );
+    $('#pwm1vSlider').slider( "value", pwm1dutypercent );
+    $('#pwm2vSlider').slider( "value", pwm2dutypercent );
     
     for (j = 0; j < 3; j = j + 1) {
         if (data[j] < 101) {
@@ -265,6 +314,8 @@ $(function() {
 
     updatePlotloop();
 
+	$( "#tabs" ).tabs();
+
     $("#radio").buttonset();
     
     ioCheck();
@@ -290,10 +341,15 @@ $(function() {
     $("#AIN2").button('option', 'label', ain2Name);
     $("#AIN4").button('option', 'label', ain4Name);
     $("#AIN6").button('option', 'label', ain6Name);
-    
+    $("#AIN8").button('option', 'label', ain8Name);
+
     $("#pwm0name").text(pwm0Name);
     $("#pwm1name").text(pwm1Name);
     $("#pwm2name").text(pwm2Name);
+    
+    $("#vpwm0name").text(pwm0Name);
+    $("#vpwm1name").text(pwm1Name);
+    $("#vpwm2name").text(pwm2Name);
     
     $("#graphenable :checkbox").click(function(){
         //alert($(this).attr("id") + " " + $(this).is(":checked"));
@@ -314,6 +370,12 @@ $(function() {
                 graphEnabled[2] = 1;
             else
                 graphEnabled[2] = 0;
+        }
+        if($(this).attr("id") == "AIN8") {
+            if ($(this).is(":checked"))
+                graphEnabled[3] = 1;
+            else
+                graphEnabled[3] = 0;
         }
         updatePlot();
     });
@@ -337,9 +399,28 @@ $(function() {
                 socket.emit('pwmdutypercent', [ 2, ui.value ]);
             }
     });
+    $('#pwm0vSlider').slider({ min: 0, max: 100, step: 1, animate: true, orientation: "vertical",
+        change: function(event, ui) {  
+            if(event.originalEvent!=undefined) 
+                socket.emit('pwmdutypercent', [ 0, ui.value ]);
+        }
+    });
+    $('#pwm1vSlider').slider({ min: 0, max: 100, step: 1, animate: true, orientation: "vertical",
+        change: function(event, ui) {
+            if(event.originalEvent!=undefined) 
+                socket.emit('pwmdutypercent', [ 1, ui.value ]); 
+        }
+    });
+    $('#pwm2vSlider').slider({ min: 0, max: 100, step: 1, animate: true, orientation: "vertical",
+        change: function(event, ui) { 
+            if(event.originalEvent!=undefined) 
+                socket.emit('pwmdutypercent', [ 2, ui.value ]);
+            }
+    });
 });
 
 </script>
 
 </body>
 </html>
+
